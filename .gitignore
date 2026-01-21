@@ -1,0 +1,24 @@
+# Build directories
+bin/
+obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Package manager
+packages/
+*.nupkg
+
+# Environment and secrets
+*.env
+*.key
+
+# OS-specific
+Thumbs.db
+.DS_Store
