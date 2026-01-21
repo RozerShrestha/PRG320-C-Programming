@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Week3.Interface
+namespace Week3.Abstract
 {
-    public enum Channel
+    public interface IQRPaymentProcessor:IPaymentProcessor
     {
-        Email,
-        Sms
+        void QRDecrypt();
     }
 }

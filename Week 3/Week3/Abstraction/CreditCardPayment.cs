@@ -12,10 +12,11 @@ namespace Week3.Abstraction
 
         public void ProcessPayment(decimal amount)
         {
-            ValidateCard();
-            ValidateBalance();
-            ChargeCard();
-            TransferFund();
+            //option 2
+            //ValidateCard();
+            //ValidateBalance();
+            //ChargeCard();
+            //TransferFund();
         }
 
         public void TransferFund()

@@ -1,4 +1,5 @@
 ﻿using Week3.Abstraction;
+using Week3.AbstractSimple;
 using Week3.Encapsulation;
 using Week3.Interface;
 
@@ -21,17 +22,13 @@ class Program
 
         #endregion
 
-
         #region Abstraction
 
         //var qrPayment1 = new QRPayment();
         //qrPayment1.ProcessPayment(4000);
 
-
         //var creditPayment1 = new CreditCardPayment();
         //creditPayment1.ProcessPayment(5000);
-
-
 
         //var qrpayment = new CheckOutService(new QRPayment());
         //qrpayment.CompletePayment(4000);
@@ -41,23 +38,36 @@ class Program
         #endregion
 
         #region Interface
-        //var notify1 = new NotificationService(new SMSSender());
-        //notify1.Notify("Here is the message from SMS");
+        //var emailSender = new EmailSender();
+        //var smsSender = new SMSSender();
 
-        //var notify2=new NotificationService(new EmailSender());
-        //notify2.Notify("Here is the message from Email");
+
+        ////using NotificationService to send email and sms is not necessary now.
+        //var notify2 = new NotificationService(emailSender, smsSender);
 
         ////For email
         //var emailReq = new Notification
         //{
         //    Channel = Channel.Email,
-        //    To = "rozer.shrestha@gmail.com",
+        //    FromEmail="from@gmail.com",
+        //    To = "to@gmail.com",
         //    Subject = "sample email subject",
         //    Message = "Here is sample message",
         //    IsHtml = false
         //};
 
         //notify2.Notify(emailReq);
+        #endregion
+
+        #region
+        Vehicle myCar = new Car();
+        myCar.Drive();   // Output: Car is driving on the road.
+        myCar.FuelUp("car");  // Output: Car is fueled up.
+
+        Vehicle myBike = new Bike();
+        myBike.Drive();  // Output: Bike is riding on the street.
+        myBike.FuelUp("Bike"); // Output: Bike is fueled up.
+
         #endregion
 
     }

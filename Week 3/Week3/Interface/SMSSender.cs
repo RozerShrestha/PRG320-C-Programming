@@ -6,34 +6,14 @@ using System.Threading.Tasks;
 
 namespace Week3.Interface
 {
-    internal class SMSSender : ISender
+    public class SMSSender : ISMSSender
     {
-        public void SendBulkEmail()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendBulkEmailWithTemplate()
-        {
-            throw new NotImplementedException();
-        }
-
         public void SendBulkSMS()
         {
             throw new NotImplementedException();
         }
 
         public void SendBulkSMSWithTemplate()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendEmail()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendEmailWithTemplate()
         {
             throw new NotImplementedException();
         }

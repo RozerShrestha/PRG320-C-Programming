@@ -6,49 +6,32 @@ using System.Threading.Tasks;
 
 namespace Week3.Interface
 {
-    internal class EmailSender : ISender
+    public class EmailSender : IEmailSender
     {
-        public void SendBulkEmail()
+        public void SendBulkEmail(List<Notification> notifications)
         {
             throw new NotImplementedException();
         }
 
-        public void SendBulkEmailWithTemplate()
+        public void SendBulkEmailWithTemplate(List<Notification> notificationsTemplate)
         {
             throw new NotImplementedException();
         }
 
-        public void SendBulkSMS()
+        public void SendEmail(string from, string to, string message, bool isHtml)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Email send from: {from}");
+            Console.WriteLine($"Email send to: {to}");
+            Console.WriteLine($"Message: {message}");
+            Console.WriteLine($"Is Html: {isHtml}");
         }
 
-        public void SendBulkSMSWithTemplate()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendEmail()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendEmailWithTemplate()
+        public void SendEmailWithTemplate(string from, string to, string messageTemplate, bool isHtml)
         {
             throw new NotImplementedException();
         }
 
         public void SendOTP()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendSMS()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendSMSWithTemplate()
         {
             throw new NotImplementedException();
         }

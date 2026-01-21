@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Week3.Interface
 {
-    internal interface IEmailSender:ISender
+    public interface IEmailSender:ISender
     {
+        void SendEmail(string from, string to, string message, bool isHtml);
+        void SendBulkEmail(List<Notification> notifications);
+        void SendEmailWithTemplate(string from, string to, string messageTemplate, bool isHtml);
+        void SendBulkEmailWithTemplate(List<Notification> notificationsTemplate);
     }
 }

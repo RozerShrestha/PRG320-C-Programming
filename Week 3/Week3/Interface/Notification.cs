@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Week3.Interface
 {
-    internal class Notification
+    public class Notification
     {
 
         public Channel Channel { get; init; }

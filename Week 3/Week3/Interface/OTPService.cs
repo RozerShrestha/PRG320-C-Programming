@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Week3.Interface
 {
-    internal class OTPService
+    public class OTPService
     {
         private readonly ISender _sender;
 

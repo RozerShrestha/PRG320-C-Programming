@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Week3.Interface
 {
-    internal interface ISMSSender: ISender
+    public interface ISMSSender: ISender
     {
+        void SendSMS();
+        void SendBulkSMS();
+        void SendSMSWithTemplate();
+        void SendBulkSMSWithTemplate();
     }
 }
