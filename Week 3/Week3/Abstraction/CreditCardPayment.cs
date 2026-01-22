@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Week3.Abstraction
 {
-    public class CreditCardPayment : IPaymentProcessor
+    public class CreditCardPayment : ICreditCardPaymentProcessor
     {
-        
 
         public void ProcessPayment(decimal amount)
         {
@@ -18,25 +17,24 @@ namespace Week3.Abstraction
             //ChargeCard();
             //TransferFund();
         }
+        public void ChargeCard()
+        {
+            throw new NotImplementedException();
+        }
 
         public void TransferFund()
         {
-           
+            throw new NotImplementedException();
         }
 
         public void ValidateBalance()
         {
-           
+            throw new NotImplementedException();
         }
 
         public void ValidateCard()
         {
-           
-        }
-
-        public void ChargeCard()
-        {
-            
+            throw new NotImplementedException();
         }
     }
 }

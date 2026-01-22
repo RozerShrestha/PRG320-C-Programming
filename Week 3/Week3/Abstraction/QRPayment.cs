@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Week3.Abstraction
 {
-    public class QRPayment : IPaymentProcessor
+    public class QRPayment : IQRPaymentProcessor
     {
         public void ProcessPayment(decimal amount)
         {
@@ -18,17 +18,17 @@ namespace Week3.Abstraction
 
         public void QRDecrypt()
         {
-            
+            throw new NotImplementedException();
         }
 
         public void TransferFund()
         {
-            
+            throw new NotImplementedException();
         }
 
         public void ValidateBalance()
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

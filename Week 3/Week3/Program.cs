@@ -38,35 +38,53 @@ class Program
         #endregion
 
         #region Interface
-        //var emailSender = new EmailSender();
-        //var smsSender = new SMSSender();
+        var emailSender = new EmailSender();
+        var smsSender = new SMSSender();
 
 
-        ////using NotificationService to send email and sms is not necessary now.
-        //var notify2 = new NotificationService(emailSender, smsSender);
+        //using NotificationService to send email and sms is not necessary now.
+        var notify1 = new NotificationService(emailSender, smsSender);
 
-        ////For email
-        //var emailReq = new Notification
-        //{
-        //    Channel = Channel.Email,
-        //    FromEmail="from@gmail.com",
-        //    To = "to@gmail.com",
-        //    Subject = "sample email subject",
-        //    Message = "Here is sample message",
-        //    IsHtml = false
-        //};
+        //For email
+        var emailReq = new Notification
+        {
+            Channel = Channel.Email,
+            FromEmail = "from@gmail.com",
+            To = "to@gmail.com",
+            Subject = "sample email subject",
+            Message = "Here is sample message",
+            IsHtml = false
+        };
+        notify1.Notify(emailReq);
 
-        //notify2.Notify(emailReq);
+        var emailReqList = new List<Notification>
+        {
+            new Notification { Channel = Channel.Email, FromEmail = "from@gmail.com", To = "to1@gmail.com", Subject = "sample email subject", Message = "Here is sample message", IsHtml = false },
+            new Notification { Channel = Channel.Email, FromEmail = "from@gmail.com", To = "to2@gmail.com", Subject = "sample email subject", Message = "Here is sample message", IsHtml = false },
+            new Notification { Channel = Channel.Email, FromEmail = "from@gmail.com", To = "to3@gmail.com", Subject = "sample email subject", Message = "Here is sample message", IsHtml = false },
+        };
+        notify1.Notify(Channel.Email, emailReqList);
+
+        //For SMS
+        var smsReq = new Notification
+        {
+            Channel = Channel.Sms,
+            FromPhone = "1234567890",
+            To = "0987654321",
+            Message = "Here is sample SMS message",
+            IsHtml = false
+        };
+        notify1.Notify(smsReq);
         #endregion
 
         #region
-        Vehicle myCar = new Car();
-        myCar.Drive();   // Output: Car is driving on the road.
-        myCar.FuelUp("car");  // Output: Car is fueled up.
+        //Vehicle myCar = new Car();
+        //myCar.Drive();   // Output: Car is driving on the road.
+        //myCar.FuelUp("car");  // Output: Car is fueled up.
 
-        Vehicle myBike = new Bike();
-        myBike.Drive();  // Output: Bike is riding on the street.
-        myBike.FuelUp("Bike"); // Output: Bike is fueled up.
+        //Vehicle myBike = new Bike();
+        //myBike.Drive();  // Output: Bike is riding on the street.
+        //myBike.FuelUp("Bike"); // Output: Bike is fueled up.
 
         #endregion
 

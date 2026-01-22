@@ -7,6 +7,15 @@ using System.Threading.Tasks;
 namespace Week3.Encapsulation
 {
     //Encapsulation
+    // IS a process of hiding the internal details of how an object works and exposing only the necessary parts to the outside world.
+    // A class that represents a bank account with encapsulated balance management
+    // RULES:
+    // 1. Private fields to store balance and daily withdrawn amount
+    // 2. Public read-only property to access balance
+    // 3. Public methods to deposit and withdraw money
+    // 4. Validation to prevent invalid operations (e.g., negative deposits/withdrawals)
+    // 5. Enforce bank rules (e.g., no overdrafts, daily withdrawal limits)
+
 
     public class BankAccount
     {

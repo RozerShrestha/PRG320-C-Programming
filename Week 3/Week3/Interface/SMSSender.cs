@@ -18,17 +18,18 @@ namespace Week3.Interface
             throw new NotImplementedException();
         }
 
-        public void SendOTP()
-        {
-            throw new NotImplementedException();
-        }
-
         public void SendSMS()
         {
             throw new NotImplementedException();
         }
 
         public void SendSMSWithTemplate()
+        {
+            throw new NotImplementedException();
+        }
+
+        //this is coming from Isender interface
+        public void SendOTP()
         {
             throw new NotImplementedException();
         }
