@@ -6,7 +6,22 @@ using System.Threading.Tasks;
 
 namespace Week3
 {
-    internal class CustomException
+
+    //we are creating Custom Exception by inheriting the base Exception class
+    public class InsufficientFundsException : Exception
     {
+        public decimal CurrentBalance { get; }
+        public decimal WithdrawAmount { get; }
+
+        public InsufficientFundsException(string message, decimal balance, decimal withdrawAmount)
+        : base(message)
+        {
+            CurrentBalance = balance;
+            WithdrawAmount = withdrawAmount;
+        }
+
+
     }
+
+}
 }

@@ -1,4 +1,5 @@
-﻿using Week3.Abstraction;
+﻿using System.Net.Http.Headers;
+using Week3.Abstraction;
 using Week3.AbstractSimple;
 using Week3.Encapsulation;
 using Week3.Interface;
@@ -88,7 +89,8 @@ class Program
         //notify1.Notify(smsReq);
         #endregion
 
-        #region
+        #region Abrstract Class  
+
         //Vehicle myCar = new Car();
         //myCar.Drive();   // Output: Car is driving on the road.
         //myCar.FuelUp("car");  // Output: Car is fueled up.
@@ -99,15 +101,18 @@ class Program
 
         #endregion
 
-        #region
-        Car car =new Car();
-        car.FuelUp("Toyota");
-        Bike bike = new Bike();
-        bike.FuelUp("Honda");
+        #region Polymorphism
+        //these are example of compile time polymorphism (method overloading)
+        Calculator calculator =new Calculator();
+        calculator.Add(1, 2);
+        calculator.Add(2, 3);
+        calculator.Add(1.1, 2.2);
 
-
-        Calculator c = new Calculator();
-        c.Add()
+        //these are example of runtime polymorphism (method overriding)
+        CreditCardProcessor creditCardProcessor = new CreditCardProcessor();
+        creditCardProcessor.ProcessPayment(5000);
+        PayPalProcessor payPalProcessor=new PayPalProcessor();
+        payPalProcessor.ProcessPayment(7000);
 
         #endregion
     }
