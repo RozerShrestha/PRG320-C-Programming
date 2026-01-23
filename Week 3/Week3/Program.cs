@@ -2,6 +2,7 @@
 using Week3.AbstractSimple;
 using Week3.Encapsulation;
 using Week3.Interface;
+using Week3.Polymorphism;
 
 class Program
 {
@@ -24,57 +25,67 @@ class Program
 
         #region Abstraction
 
+
+
+
+        ////option 1
+        //var qrpayment = new CheckOutService(new QRPayment());
+        //qrpayment.CompletePayment(4000);
+
+        //var creditCardPayment = new CheckOutService(new CreditCardPayment());
+        //creditCardPayment.CompletePayment(5000);
+
+
+        ////option 2
         //var qrPayment1 = new QRPayment();
         //qrPayment1.ProcessPayment(4000);
 
         //var creditPayment1 = new CreditCardPayment();
         //creditPayment1.ProcessPayment(5000);
 
-        //var qrpayment = new CheckOutService(new QRPayment());
-        //qrpayment.CompletePayment(4000);
 
-        //var creditCardPayment = new CheckOutService(new CreditCardPayment());
-        //creditCardPayment.CompletePayment(5000);
+
+
         #endregion
 
         #region Interface
-        var emailSender = new EmailSender();
-        var smsSender = new SMSSender();
+        //var emailSender = new EmailSender();
+        //var smsSender = new SMSSender();
 
 
-        //using NotificationService to send email and sms is not necessary now.
-        var notify1 = new NotificationService(emailSender, smsSender);
+        ////using NotificationService to send email and sms is not necessary now.
+        //var notify1 = new NotificationService(emailSender, smsSender);
 
-        //For email
-        var emailReq = new Notification
-        {
-            Channel = Channel.Email,
-            FromEmail = "from@gmail.com",
-            To = "to@gmail.com",
-            Subject = "sample email subject",
-            Message = "Here is sample message",
-            IsHtml = false
-        };
-        notify1.Notify(emailReq);
+        ////For email
+        //var emailReq = new Notification
+        //{
+        //    Channel = Channel.Email,
+        //    FromEmail = "from@gmail.com",
+        //    To = "to@gmail.com",
+        //    Subject = "sample email subject",
+        //    Message = "Here is sample message",
+        //    IsHtml = false
+        //};
+        //notify1.Notify(emailReq);
 
-        var emailReqList = new List<Notification>
-        {
-            new Notification { Channel = Channel.Email, FromEmail = "from@gmail.com", To = "to1@gmail.com", Subject = "sample email subject", Message = "Here is sample message", IsHtml = false },
-            new Notification { Channel = Channel.Email, FromEmail = "from@gmail.com", To = "to2@gmail.com", Subject = "sample email subject", Message = "Here is sample message", IsHtml = false },
-            new Notification { Channel = Channel.Email, FromEmail = "from@gmail.com", To = "to3@gmail.com", Subject = "sample email subject", Message = "Here is sample message", IsHtml = false },
-        };
-        notify1.Notify(Channel.Email, emailReqList);
+        //var emailReqList = new List<Notification>
+        //{
+        //    new Notification { Channel = Channel.Email, FromEmail = "from@gmail.com", To = "to1@gmail.com", Subject = "sample email subject", Message = "Here is sample message", IsHtml = false },
+        //    new Notification { Channel = Channel.Email, FromEmail = "from@gmail.com", To = "to2@gmail.com", Subject = "sample email subject", Message = "Here is sample message", IsHtml = false },
+        //    new Notification { Channel = Channel.Email, FromEmail = "from@gmail.com", To = "to3@gmail.com", Subject = "sample email subject", Message = "Here is sample message", IsHtml = false },
+        //};
+        //notify1.Notify(Channel.Email, emailReqList);
 
-        //For SMS
-        var smsReq = new Notification
-        {
-            Channel = Channel.Sms,
-            FromPhone = "1234567890",
-            To = "0987654321",
-            Message = "Here is sample SMS message",
-            IsHtml = false
-        };
-        notify1.Notify(smsReq);
+        ////For SMS
+        //var smsReq = new Notification
+        //{
+        //    Channel = Channel.Sms,
+        //    FromPhone = "1234567890",
+        //    To = "0987654321",
+        //    Message = "Here is sample SMS message",
+        //    IsHtml = false
+        //};
+        //notify1.Notify(smsReq);
         #endregion
 
         #region
@@ -88,5 +99,16 @@ class Program
 
         #endregion
 
+        #region
+        Car car =new Car();
+        car.FuelUp("Toyota");
+        Bike bike = new Bike();
+        bike.FuelUp("Honda");
+
+
+        Calculator c = new Calculator();
+        c.Add()
+
+        #endregion
     }
 }

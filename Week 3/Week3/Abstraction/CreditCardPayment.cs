@@ -8,20 +8,20 @@ namespace Week3.Abstraction
 {
     public class CreditCardPayment : ICreditCardPaymentProcessor
     {
-
-        public void ProcessPayment(decimal amount)
-        {
-            //option 2
-            //ValidateCard();
-            //ValidateBalance();
-            //ChargeCard();
-            //TransferFund();
-        }
         public void ChargeCard()
         {
             throw new NotImplementedException();
         }
 
+        public void ProcessPayment(decimal amount)
+        {
+            //option 2
+            ValidateCard();
+            ValidateBalance();
+            ChargeCard();
+            TransferFund();
+        }
+        
         public void TransferFund()
         {
             throw new NotImplementedException();

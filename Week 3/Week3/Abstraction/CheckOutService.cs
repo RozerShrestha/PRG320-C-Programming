@@ -9,6 +9,9 @@ namespace Week3.Abstraction
     public class CheckOutService
     {
         private readonly IPaymentProcessor _processor;
+
+
+
         public CheckOutService(IPaymentProcessor processor)
         {
             _processor = processor;
@@ -24,7 +27,6 @@ namespace Week3.Abstraction
             if (_processor is IQRPaymentProcessor qrProcessor)
             {
                 qrProcessor.QRDecrypt();
-                qrProcessor.ProcessPayment(amount);
             }
 
             //Option 2: 

@@ -11,9 +11,9 @@ namespace Week3.Abstraction
         public void ProcessPayment(decimal amount)
         {
             //option 2
-            //QRDecrypt();
-            //ValidateBalance();
-            //TransferFund();
+            QRDecrypt();
+            ValidateBalance();
+            TransferFund();
         }
 
         public void QRDecrypt()

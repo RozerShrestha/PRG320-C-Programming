@@ -11,5 +11,27 @@ namespace Week3.Abstraction
         void ProcessPayment(decimal amount);
         void ValidateBalance();
         void TransferFund();
+
+    }
+
+
+
+
+    public class Bank : IPaymentProcessor
+    {
+        public void ProcessPayment(decimal amount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void TransferFund()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ValidateBalance()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -27,9 +27,8 @@ namespace LibraryManagementSystem
             
         }
 
-    // Constructor with message, property name, and invalid value
-    public InvalidItemDataException(string message, string propertyName, object invalidValue)
-        : base(message)
+        // Constructor with message, property name, and invalid value
+        public InvalidItemDataException(string message, string propertyName, object invalidValue): base(message)
         {
             PropertyName = propertyName;
             InvalidValue = invalidValue;
