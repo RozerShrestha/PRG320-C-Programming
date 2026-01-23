@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Week3
+namespace Week3.ExceptionHandling
 {
 
     //we are creating Custom Exception by inheriting the base Exception class
@@ -13,15 +13,15 @@ namespace Week3
         public decimal CurrentBalance { get; }
         public decimal WithdrawAmount { get; }
 
+        public InsufficientFundsException(string message):base(message)
+        {
+            
+        }
         public InsufficientFundsException(string message, decimal balance, decimal withdrawAmount)
         : base(message)
         {
             CurrentBalance = balance;
             WithdrawAmount = withdrawAmount;
         }
-
-
     }
-
-}
 }

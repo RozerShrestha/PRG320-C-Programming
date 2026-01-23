@@ -2,6 +2,7 @@
 using Week3.Abstraction;
 using Week3.AbstractSimple;
 using Week3.Encapsulation;
+using Week3.ExceptionHandling;
 using Week3.Interface;
 using Week3.Polymorphism;
 
@@ -102,18 +103,52 @@ class Program
         #endregion
 
         #region Polymorphism
-        //these are example of compile time polymorphism (method overloading)
-        Calculator calculator =new Calculator();
-        calculator.Add(1, 2);
-        calculator.Add(2, 3);
-        calculator.Add(1.1, 2.2);
+        ////these are example of compile time polymorphism (method overloading)
+        //Calculator calculator =new Calculator();
+        //calculator.Add(1, 2);
+        //calculator.Add(2, 3);
+        //calculator.Add(1.1, 2.2);
 
-        //these are example of runtime polymorphism (method overriding)
-        CreditCardProcessor creditCardProcessor = new CreditCardProcessor();
-        creditCardProcessor.ProcessPayment(5000);
-        PayPalProcessor payPalProcessor=new PayPalProcessor();
-        payPalProcessor.ProcessPayment(7000);
+        ////these are example of runtime polymorphism (method overriding)
+        //CreditCardProcessor creditCardProcessor = new CreditCardProcessor();
+        //creditCardProcessor.ProcessPayment(5000);
+        //PayPalProcessor payPalProcessor=new PayPalProcessor();
+        //payPalProcessor.ProcessPayment(7000);
 
+        #endregion
+
+        #region Exception handling
+        //setting balance to 500 for testing
+        BankAcc account = new BankAcc(500);
+
+        try
+        {
+            Console.WriteLine("Attempting to withdraw 800...");
+            account.Withdraw(800);
+        }
+        //since 800 > 500, it will throw InsufficientFundsException
+        catch (InsufficientFundsException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine($"Current Balance: {ex.CurrentBalance:C}");
+            Console.WriteLine($"Requested Withdrawal: {ex.WithdrawAmount:C}");
+        }
+        finally
+        {
+            Console.WriteLine("Transaction attempt completed.");
+        }
+
+
+
+        try
+        {
+            account.Deposit(-1);
+        }
+        catch (InsufficientFundsException ex)
+        {
+
+            Console.WriteLine($"Error: {ex.Message}");
+        }
         #endregion
     }
 }
