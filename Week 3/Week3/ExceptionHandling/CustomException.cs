@@ -13,7 +13,7 @@ namespace Week3.ExceptionHandling
         public decimal CurrentBalance { get; }
         public decimal WithdrawAmount { get; }
 
-        public InsufficientFundsException(string message):base(message)
+        public InsufficientFundsException(string message):base(message) // this base(message) calls the constructor of the base Exception class
         {
             
         }
@@ -24,4 +24,7 @@ namespace Week3.ExceptionHandling
             WithdrawAmount = withdrawAmount;
         }
     }
+
+   
+
 }

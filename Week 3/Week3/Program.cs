@@ -125,6 +125,7 @@ class Program
         {
             Console.WriteLine("Attempting to withdraw 800...");
             account.Withdraw(800);
+
         }
         //since 800 > 500, it will throw InsufficientFundsException
         catch (InsufficientFundsException ex)

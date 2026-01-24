@@ -1,0 +1,115 @@
+Before Submitting Assignments:
+
+Here is the Explanation for the Project:
+
+Create Base class "Item" --> remember this class has to be abstract class
+"public abstract class Item"
+Create private properties _title, _publisher and _publicationYear --> remember the naming convention for private properties
+Create public properties that can access above private properties --> example is in week 3
+In each public properties there has to be a validation check for title, publisher and publicationYear
+  	For Title
+  	1: check for Null
+  	2: check for length e.g. title should not be "T" single character, at least title should be 5 character long
+  	3: should begin with Capital Letter like (The Great Gatsby) not (the great gatsby) --> little bit tricky but you can easily find the way to validate this
+
+  	For Publisher
+	1: check for Null
+  	2: check for length e.g. publisher should not be "T" single character, at least publisher should be 6 character long
+  	3: should begin with Capital Letter like (The Great Gatsby) not (Hachette Book Group) --> little bit tricky but you can easily find the way to validate this
+
+	For PublicationYear
+	1: check for Null
+	2: check for length e.g. publicationYear should not be 202 but should be 1991, 1995, 2005 i.e. should be of length 4, not less not more
+
+
+since the Item class is abstract, to follow abstract class structure, create one method which can be used by both Book and Magazine class
+
+e.g. 	public virtual void DisplayItems() // this function can be override
+	{
+		Console.WriteLine($"Title: {Title}, Publisher: {Publisher}, Year: {PublicationYear}");
+	}
+
+
+Create Another class which is called child class or derived class "Book" and "Magazine"
+These class has to Inherit Base class
+Example: 
+ "public class Book : Item" 
+and Book must have its own private property _author
+and Magizine must have its own private property _issueNumber
+similar to Item class create Public properties that can access _author and _issueNumber
+
+Validation is required for Author and IssueNumber as well
+add similar kind of validation as above mentioned
+
+
+
+
+
+Now, Remember the service layer that I have shown you, which is not mandatory to implement in this project but if you implement than it would be vary nice
+
+Create class LibraryService
+This class act as a service layer which perform operation for both Book and Magazine
+	create a private List<Item> _items=new List<Item>(); // this store both the objects of book and magazine
+	create AddItem(Item item) and DisplayItems() functions within this service
+	
+you can check duplicateItem and validate within AddItem() function
+
+How to do?
+	use foreach or for loop to loop through the list
+	using if statement check of Title, Publisher and PublicationYear if all of them matches then
+
+
+
+here is a sample code for this service layer
+
+//Its a service layer to manage library items
+public class LibraryService
+{
+    
+    private List<Item> _items = new();
+
+    //Method to add item to the library
+    public void AddItem(Item item)
+    {
+        foreach( var existingItem in _items)
+        {
+            if(existingItem.Title == item.Title &&
+               existingItem.Publisher == item.Publisher &&
+               existingItem.PublicationYear == item.PublicationYear)
+            {
+                throw new InvalidOperationException("Item already exists in the library.");
+            }
+            else
+            {
+                _items.Add(item);
+                Console.WriteLine($"Item with these information Title:{item.Title} - Publisher:{item.Publisher} - Publication Year: {item.PublicationYear} added successfully.");
+            }
+        }
+    }
+
+    public void DisplayAllItems()
+    {
+        foreach (var item in _items)
+        {
+            item.DisplayInfo();
+        }
+    }
+
+}
+
+
+ Creating Exception Classes for better exception handling (Custom Exception)
+ you can get example from week3 folder for creating custom exception 
+
+
+Note  we need to start learning folder structure as well
+"Create Folder -> 'Model' -> add all above mentioned classes Item, Book and Magazine here"
+"Create Folder -> 'Service' -> add this LibraryService here"
+"Create Folder -> 'CustomException' -> add all the customer exception like InvalidItemDataException and DuplicateEntryException" here
+
+
+
+
+
+
+ 
