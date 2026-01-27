@@ -11,7 +11,9 @@ class Program
         #region Write into or Create File
 
         File.WriteAllText("sample.txt", "This is a sample content"); //simply write text to a file
-        File.WriteAllLines("Line.txt", new string[] { "Line 1", "Line 2", "Line 3" }); //write multiple lines to a file
+        File.WriteAllText("sample.txt", "This is overwritten content"); //this will overwrite the existing content
+        File.WriteAllLines("lines.txt", new string[] { "First Line", "Second Line", "Third Line" }); //write multiple lines to a file)
+        File.WriteAllLines("lines.txt", new string[] { "Line 1", "Line 2", "Line 3" }); //write multiple lines to a file
         File.AppendAllText("sample.txt", "\nThis is appended text"); //append text to an existing file)
 
         #endregion
@@ -64,9 +66,9 @@ class Program
             for (int i = 0; i < 10000; i++)
             {
                 byte[] data = System.Text.Encoding.UTF8.GetBytes($"This is line number {i}\n"); // converts string to byte array using UTF-8 encoding
-                await fileStream.WriteAsync(data, 0, data.Length);
+                fileStream.Write(data);
             }
-            await fileStream.FlushAsync();
+            fileStream.Flush();
            
         }
         //write
@@ -75,11 +77,10 @@ class Program
 
         writer.Close();
         //StreamReader
-        using StreamReader reader = new StreamReader("largefile.txt");
+        using StreamReader reader = new StreamReader("classwork.txt");
     //string allText = reader.ReadToEnd();
     // Console.WriteLine(allText);
-
-    //ID: 101, Name: Alice, Department: HR
+    //ID: 10100000, Names: Alice, Department: HR
     //ID: 102, Name: Bob, Department: IT
     //ID: 103, Name: Charlie, Department: Finance
     //ID: 104, Name: Diana, Department: Marketing
@@ -87,12 +88,11 @@ class Program
 
 
 
-
         string? line;
         while((line = reader.ReadLine()) != null)
         {
             line = line.Trim();
-
+           var ask = line.Contains("HR");
             //if (line.Contains("Finance"))
             {
                 int startIndex= line.IndexOf("Name: ")+6;
@@ -133,6 +133,7 @@ class Program
         #region reading json data
         string studentData = File.ReadAllText("example.txt");
         Student student = JsonSerializer.Deserialize<Student>(studentData);
+        string backToStudentJson=JsonSerializer.Serialize<Student>(student);
 
         Console.WriteLine($"ID: {student.Id}- FullName: {student.FullName} - Age: {student.Age} - Email: {student.Email} - PhoneNumber: {student.PhoneNumber} - DOB: {student.DateOfBirth}");
 
