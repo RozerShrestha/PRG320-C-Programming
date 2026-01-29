@@ -133,6 +133,7 @@ class Program
         #region reading json data
         string studentData = File.ReadAllText("example.txt");
         Student student = JsonSerializer.Deserialize<Student>(studentData);
+        string jsonStudent = JsonSerializer.Serialize<Student>(student);
 
         Console.WriteLine($"ID: {student.Id}- FullName: {student.FullName} - Age: {student.Age} - Email: {student.Email} - PhoneNumber: {student.PhoneNumber} - DOB: {student.DateOfBirth}");
 
