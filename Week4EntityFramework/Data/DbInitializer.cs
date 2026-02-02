@@ -33,11 +33,6 @@ namespace Week4EntityFramework.Data
                 var list2 = context.Students.Where(x => x.FirstName.Equals("ss"));
 
 
-                
-
-
-
-
                 //save data to the database tables
                 context.SaveChanges();
 
