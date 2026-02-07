@@ -1,0 +1,42 @@
+﻿<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+<script>$.widget.bridge('uibutton', $.ui.button)</script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+<script src="~/lib/moment/moment.min.js"></script>
+<script src="~/lib/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="~/lib/AdminLTE/js/adminlte.js"></script>
+<script src="~/lib/datatablesv2/datatables.min.js"></script>
+<script src="~/lib/datatablesv2/datatables.js"></script>
+<script src="~/lib/datatablesv2/buttons-2.4.1/js/buttons.datatables.min.js"></script>
+<script src="~/lib/datatablesv2/buttons-2.4.1/js/buttons.datatables.js"></script>
+<script src="~/lib/datatablesv2/buttons-2.4.1/js/buttons.html5.min.js"></script>
+<script src="~/lib/datatablesv2/buttons-2.4.1/js/buttons.html5.js"></script>
+<script src="~/lib/datatablesv2/pdfmake-0.2.7/pdfmake.min.js"></script>
+<script src="~/lib/datatablesv2/pdfmake-0.2.7/pdfmake.js"></script>
+<script src="~/js/custom.js"></script>
+<script src="~/lib/toastr/toastr.min.js"></script>
+<script src="~/lib/select2/select2.min.js"></script>
+<!-- DataTables Buttons JavaScript -->
+
+
+<script>
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            var id = this.getAttribute('data-id');
+            var type = this.getAttribute('data-type');
+            if (type == "role") {
+                document.getElementById('confirmDelete').setAttribute('href', '@Url.Action("Delete", "Role")' + '/' + id);
+            }
+            if(type=="menu"){
+                document.getElementById('confirmDelete').setAttribute('href', '@Url.Action("Delete", "Menu")' + '/' + id);
+            }
+            if(type=="user"){
+                document.getElementById('confirmDelete').setAttribute('href', '@Url.Action("Test", "Users")' + '/' + id);
+            }           
+        });
+    });
+</script>
+
+
+
+

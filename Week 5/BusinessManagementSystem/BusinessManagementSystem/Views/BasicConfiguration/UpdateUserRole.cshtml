@@ -1,0 +1,29 @@
+﻿@model BusinessManagementSystem.Models.BasicConfiguration
+<br />
+<h4>Update User Role</h4>
+<hr />
+<form asp-action="UpdateUserRole" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-12">
+        <div class="card card-purple card-outline">
+            <div class="card-header">
+                <h3 class="card-title">General Configuration</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Employee List</label>
+                        @Html.DropDownList("employeeId", ViewData["EmployeeList"] as SelectList, new {@class="form-control" })
+                    </div>
+                    <div class="col-md-3">
+                        <label>Roles</label>
+                        @Html.DropDownList("roleId", ViewData["RoleList"] as SelectList, new {@class="form-control" })
+                    </div>
+                    <div class="col-md-3">
+                        <input type="submit" style="margin-top:31px" value="Update Role" class="btn btn-success" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

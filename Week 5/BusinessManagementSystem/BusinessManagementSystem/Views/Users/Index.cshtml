@@ -1,0 +1,144 @@
+﻿
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h2>All Employees Information</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="tblEmployeeList" style="width:100%" class="table table-striped table-bordered table-sm">
+                        <thead class="table-header">
+                            <tr class="border-bottom-0 tr-header header">
+                                <th>ID</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Date Of Birth</th>
+                                <th>Address</th>
+                                <th>Gender</th>
+                                <th>Mobile Number</th>
+                                <th>Occupation</th>
+                                <Th>Status</Th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ModalView" />
+
+@section Scripts {
+    <script>
+        var datatable = null;
+        $(document).ready(function () {
+            loadDataTable('Active');
+
+            $('#tblEmployeeList').on('click', '.delete-item', function (e) {
+                e.preventDefault();
+                const itemId = $(this).data('id');
+                $('#confirmationModalDel').modal('show'); // Show the Bootstrap modal
+                $('#confirmationModalDel').data('item-id', itemId); // Store claim ID in the modal data
+            });
+
+            $('#confirmDelete').on('click', function () {
+
+                const itemId = $('#confirmationModalDel').data('item-id');
+                $('#confirmationModalDel').modal('hide');
+                const table = $('#tblMyClaims').DataTable();
+                const $row = $(this).closest('tr');
+                $.ajax({
+                    type: 'GET',
+                    url: `/Users/Delete?guid=${itemId}`,
+                    contentType: 'application/json',
+                    success: function (response) {
+                        table.ajax.reload();
+                        toastr.success('Successfully Deleted');
+                    },
+                    error: function (error) {
+                        toastr.error("Error Deleting");
+                    }
+                });
+            });
+        });
+        function loadDataTable(status) {
+            if (datatable) {
+                $("#tblEmployeeList").DataTable().destroy();
+            }
+            datatable = $("#tblEmployeeList").DataTable({
+                fixHeader: {
+                    header: true,
+                    headerOffset: 50
+                },
+                autoWidth: true,
+                lengthMenu: [[25, 50, -1], [25, 50, "All"]],
+                "ajax": {
+                    "url": `/Users/GetAllUser`,
+                    "dataSrc": function (data) {
+                        // console.log(data);
+                        // return data.datas;
+                        return data.datas.map(function (item) {
+                            item.user.roleName=item.roleName
+                            return item.user;
+                        });
+                    }
+                },
+                "columns": [
+                    {
+                        "data": "id",
+                    },
+                    {
+                        "data": "fullName",
+                    },
+                    {
+                        "data": "email",
+                    },
+                    {
+                        "data": "dateOfBirth",
+                    },
+                    {
+                        "data": "address",
+                    },
+                    {
+                        "data": "gender",
+                    },
+                    {
+                        "data": "phoneNumber",
+                    },
+                    {
+                        "data": "occupation",
+                    },
+                    {
+                        "data": "status",
+                    },
+                    {
+                        "data": "roleName",
+                    },
+                    {
+                        "data": "guid",
+                        "render": function (data) {
+                            return `
+                                    <div>
+                                        <a href="/Users/edit?guid=${data}"><i class="fas fa-edit"></i></i></a> |
+                                        <a href="/Users/detail?guid=${data}"><i class="fas fa-eye"></i></i></a> |
+                                        <a href="#" class="delete-item" data-id="${data}"> <i class= "fas fa-trash-alt" > </i></a >
+                                        </div>
+                                    `
+                        }
+                    }
+                ]
+            });
+
+        }
+        function employeeStatusChange(status) {
+            loadDataTable(status);
+            //alert(status
+        }
+
+    </script>
+}

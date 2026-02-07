@@ -1,0 +1,86 @@
+﻿@model BusinessManagementSystem.Dto.UserDto
+@{
+    var registerResponse = (BusinessManagementSystem.Dto.ResponseDto<BusinessManagementSystem.Dto.LoginResponseDto>)ViewData["RegisterResponse"];
+    Layout = "_Login";
+}
+<div class="container">
+    <div class="frame-signup">
+        <div class="nav">
+            <img class="header" src="~/images/logo_short.jpeg" />
+            <h4 class="text-center" style="color:white">Insurance Claim</h4>
+           
+        </div>
+        <div>
+            <a asp-action="Index">Login</a>
+        </div>
+        <form class="form-signin" method="post" asp-controller="Login" asp-action="RegisterUser">
+            <div class="row">
+                <div class="col-sm-12">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-styling" />
+                    <span asp-validation-for="Email" class="text-sm-center"></span>
+                </div>
+                <div class="col-sm-12">
+                    <label asp-for="FullName"></label>
+                    <input asp-for="FullName" class="form-styling" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6">
+                    <label asp-for="Address"></label>
+                    <input asp-for="Address" class="form-styling" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6">
+                    <label asp-for="DateOfBirth"></label>
+                    @*<input asp-for="DateOfBirth" value="" type="text" class="form-styling datepicker" />*@
+                    <input asp-for="DateOfBirth" value="" type="text" class="form-styling datepicker" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6">
+                    <label asp-for="PhoneNumber"></label>
+                    <input asp-for="PhoneNumber" class="form-styling" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6">
+                    <label asp-for="Occupation"></label>
+                    <input asp-for="Occupation" class="form-styling" />
+                    <span asp-validation-for="Occupation" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6">
+                    <label asp-for="Gender"></label>
+                    @Html.DropDownListFor(m => m.Gender, new List<SelectListItem>
+                    {
+                    new SelectListItem{ Text="--Select--" },
+                    new SelectListItem{ Text="Male" },
+                    new SelectListItem{ Text="Female" },
+                    new SelectListItem{ Text="Other" }
+                    }, htmlAttributes: new { @class = "form-styling" })
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" type="password" class="form-styling" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6">
+                    <label asp-for="ConfirmPassword"></label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-styling" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+            <button class="btn-signup">Sign Up</button>
+            <br />
+           <div>
+                @*@if (registerResponse != null)
+                {
+                    if (registerResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                    {
+                        <br />
+                        <div class="text-danger">@registerResponse.Message</div>
+                    }
+                }*@
+           </div>
+        </form>
+    </div>
+</div>
+

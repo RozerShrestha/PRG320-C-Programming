@@ -1,0 +1,51 @@
+﻿
+@{
+    var modalInfo = ViewBag.ModalInformation;
+}
+@if (modalInfo.Type == "Info")
+{
+    <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:1500px; margin-left:-380px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">@modalInfo.Title</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                   <p>@modalInfo.Message</p>
+            </div>
+            <!-- Modal footer --> 
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+@if(modalInfo.Type=="Delete"){
+    <!-- Bootstrap Modal Del -->
+     <div class="modal fade" id="confirmationModalDel" tabindex="-1" aria-labelledby="confirmationModalDelLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalDelLabel">@modalInfo.Title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @modalInfo.Message
+                </div>
+                <div class="modal-footer">
+                    <a id="confirmDelete" class="btn btn-primary">Yes</a>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap Modal Del -->
+}
+
+
+
+

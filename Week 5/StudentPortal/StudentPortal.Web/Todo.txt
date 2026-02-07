@@ -1,0 +1,14 @@
+﻿1: First Create A project
+2: Install required Packages
+	EntityFrameworkCore, EntityFramework.Tools, EntityFramework.SqlServer
+3: Create New Folder -> Data
+	create a class called ApplicationDbContext
+	Create Constructor and add parameter DbContextOptions<ApplicationDbContext> options and pass it to base class
+4: Create Student.cs class within Model folder
+	create some properties
+5: Inject ApplicationDbContext from the program.cs and use database and sqlserver or any other database
+6: Add Migration to Create Database with the table that has been defined within DbSet
+	Tools->Nuget Package Manager-> Package Manager Console
+	Add-Migration "Initial Migration"
+	Update-database
+7: Configure Student class to udpate database with varchar

@@ -1,0 +1,79 @@
+﻿@model BusinessManagementSystem.Models.BasicConfiguration
+<br />
+<h4>Basic Configuration</h4>
+<hr />
+<form asp-action="Update" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="col-md-12">
+        <div class="card card-dark card-outline">
+            <div class="card-header">
+                <h3 class="card-title">General Configuration</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label asp-for="ApplicationTitle"></label>
+                        <input asp-for="ApplicationTitle" class="form-control">
+                        <span asp-validation-for="ApplicationTitle" class="text-sm-center"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="EmployerName"></label>
+                        <input asp-for="EmployerName" class="form-control">
+                        <span asp-validation-for="EmployerName" class="text-sm-center"></span>
+                    </div>
+                   
+                    <div class="col-md-3">
+                        <label asp-for="EmployerEmailAddress"></label>
+                        <input asp-for="EmployerEmailAddress" class="form-control">
+                        <span asp-validation-for="EmployerEmailAddress" class="text-sm-center"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="EmployerAddress"></label>
+                        <input asp-for="EmployerAddress" class="form-control">
+                        <span asp-validation-for="EmployerAddress" class="text-sm-center"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-dark card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Email Configuration</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label asp-for="EmailAlias"></label>
+                        <input asp-for="EmailAlias" class="form-control">
+                        <span asp-validation-for="EmailAlias" class="text-sm-center"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" class="form-control">
+                        <span asp-validation-for="Email" class="text-sm-center"></span>
+                    </div>
+                    <div class="col-md-2">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" class="form-control">
+                        <span asp-validation-for="Password" class="text-sm-center"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="HostName"></label>
+                        <input asp-for="HostName" class="form-control">
+                        <span asp-validation-for="HostName" class="text-sm-center"></span>
+                    </div>
+                    <div class="col-md-1">
+                        <label asp-for="Port"></label>
+                        <input asp-for="Port" class="form-control">
+                        <span asp-validation-for="Port" class="text-sm-center"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div col-md-12>
+        <div class="m-3">
+            <input type="submit" value="Save" class="btn btn-success my-button" />
+        </div>
+    </div>
+</form>

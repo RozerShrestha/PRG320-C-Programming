@@ -1,0 +1,33 @@
+﻿<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=11" />
+    <title>@ViewData["Title"] Business Management System</title>
+    <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link href="~/lib/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link href="~/lib/fontawesome-free/css/fontawesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/login.css" />
+    @RenderSection("Styles", required: false)
+</head>
+<body class="login-img-super">
+    <div id="browserError"></div>
+    <div id="global-loader"></div>
+    <div class="page">
+        <div class="page-single">
+            <div>
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/login_new.js"></script>
+    <script src="~/js/custom.js"></script>
+    @await Component.InvokeAsync("Notyf")
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+

@@ -1,0 +1,44 @@
+﻿@{
+    var menuList = ViewBag.Menu;
+}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a class="brand-link" asp-area="" asp-controller="Dashboard" asp-action="Index">
+        <img src="~/images/logo_short.jpeg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">@ViewBag.Title</span>
+    </a>
+    <div class="sidebar">
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                @foreach (var item in menuList)
+                {
+                    <li class="nav-item">
+                        <a href="@item.Url" class="nav-link">
+                            <i class="@item.Icon"></i>
+                            <p>
+                                @item.Name
+                                @if (item.SubMenu.Count != 0)
+                                {
+                                    <i class="right fas fa-angle-left"></i>
+                                }
+                            </p>
+                        </a>
+                        @if (item.SubMenu.Count != 0)
+                        {
+                            @foreach (var itemSub in item.SubMenu)
+                            {
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="@itemSub.Url" class="nav-link active">
+                                            <i class="@itemSub.Icon"></i>
+                                            <p>@itemSub.Name</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            }
+                        }
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</aside>

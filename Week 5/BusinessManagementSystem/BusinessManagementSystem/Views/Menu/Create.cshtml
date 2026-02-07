@@ -1,0 +1,77 @@
+﻿@model BusinessManagementSystem.Models.Menu
+@* <style scoped>
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+        list-style: none;
+        color: #000000;
+    }
+</style> *@
+<h4>Create</h4>
+<hr />
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4">
+                <label asp-for="Parent" class="control-label"></label>
+                @Html.DropDownList("Parent", ViewData["ParentList"] as SelectList, new { @class = "form-control" })
+                <span asp-validation-for="Parent" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Url" class="control-label"></label>
+                <input asp-for="Url" class="form-control" />
+                <span asp-validation-for="Url" class="text-danger"></span>
+            </div>
+            <div class="col-md-12">
+                <label class="control-label">Roles (to select the roles press ctrl and click)</label>
+                @Html.ListBoxFor(m => m.Multiselect.SelectedItems, new MultiSelectList(Model.Multiselect.Items, "Value", "Text"), new { @class = "form-control select2" })
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Sort" class="control-label"></label>
+                <input asp-for="Sort" class="form-control" />
+                <span asp-validation-for="Sort" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Status" class="control-label"></label>
+                    @* <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status) *@
+                    <select asp-for="Status" class="form-control">
+                        <option value="true">Active</option>
+                        <option value="false">In Active</option>
+                    </select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Icon" class="control-label"></label>
+                <input asp-for="Icon" class="form-control" />
+                <span asp-validation-for="Icon" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <input type="submit" value="Create" class="btn btn-success my-button" />
+            </div>
+        </div>
+    </div>
+   
+    
+</form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function  () {
+            $('.select2').select2({
+                placeholder: "Select options",
+                allowClear: true
+            });
+        });
+    </script>
+}

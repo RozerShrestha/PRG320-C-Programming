@@ -1,0 +1,34 @@
+﻿<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sample Template</title>
+    <partial name="_Styles" />
+    @RenderSection("Styles", required: false)
+</head>
+<body class="sidebar-mini control-sidebar-slide-open layout-navbar-fixed layout-fixed layout-footer-fixed" style="height: auto;">
+    @if (true@* User.Identity.IsAuthenticated *@)
+    {
+        <div class="wrapper">
+            <partial name="_Header" />
+            <partial name="_Sidebar" />
+            <section class="content">
+                <div class="content-wrapper">
+                    <div class="container-fluid">
+                        @RenderBody()
+                    </div>
+                </div>
+            </section>
+            <partial name="_Footer" />
+        </div>
+    }
+    else
+    {
+        @RenderBody()
+            @*<a href=@($"Login?returnUrl=Dashboard")>Log in</a>*@
+    }
+    <partial name="_Scripts" />
+    @await Component.InvokeAsync("Notyf")
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

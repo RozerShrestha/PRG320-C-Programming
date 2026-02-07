@@ -1,0 +1,67 @@
+﻿@model BusinessManagementSystem.Dto.LoginRequestDto
+@{
+    var loginResponse = (BusinessManagementSystem.Dto.ResponseDto<BusinessManagementSystem.Dto.LoginResponseDto>)ViewData["LoginResponse"];
+    Layout = "_Login";
+}
+
+<div class="container">
+    <div class="wrapper">
+        <form method="post" asp-controller="Login" asp-action="LoginUser">
+            <div class="login is-active">
+                <div class="profile"></div>
+                <div class="form-element">
+                    <span><i class="far fa-envelope"></i></span><input asp-for="Username" id="loginUsername" placeholder="Email/Username/Phone Number" />
+                </div>
+                <div class="form-element">
+                    <span><i class="fa fa-lock"></i></span><input type="password" asp-for="Password" id="loginPassword" placeholder="Password" />
+                </div>
+                <span asp-validation-for="Username" class="text-danger"></span>
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <button class="btn-login">Login</button>
+            </div>
+        </form>
+        <form method="post" asp-controller="Login" asp-action="ForgotPassword">
+            <div class="register down">
+                <div class="form-element">
+                    <span><i class="fa fa-user"></i></span><input asp-for="Username" id="fpUsername" onchange="handleEmailChange()" type="email" placeholder="Email Address" />
+                </div>
+                <div class="form-element">
+                    <span><i class="fa fa-envelope"></i></span><input asp-for="Password" id="fpPassword" type="password" placeholder="New Password" />
+                </div>
+                <div class="form-element">
+                    <span><i class="fa fa-lock"></i></span><input asp-for="ConfirmPassword" id="fpConfirmPassword" type="password" placeholder="Confirm Password" />
+                </div>
+                <button class="btn-register">Update Password</button>
+            </div>
+        </form>
+        <div>
+            @if (loginResponse != null)
+            {
+                if (loginResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    <br />
+                    <div class="text-danger">@loginResponse.Message</div>
+                }
+                else
+                {
+                    <br />
+                    <div class="text-danger">@loginResponse.Message</div>
+                }
+            }
+        </div>
+        <div class="login-view-toggle">
+            <div class="sign-up-toggle is-active">Forgot Password? <a href="#">Forgot Password</a></div>
+            <div class="login-toggle">Already have an account? <a href="#">Login</a></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function handleEmailChange() {
+            var inputValue1 = document.getElementById("fpUsername").value;
+            var inputValue2 = $("#fpUsername").val();
+            alert(`you Enter ${inputValue1} and ${inputValue2}`);
+        }
+    </script>
+}
