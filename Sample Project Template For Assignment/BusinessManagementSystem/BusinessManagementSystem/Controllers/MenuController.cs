@@ -24,7 +24,7 @@ namespace BusinessManagementSystem.Controllers
         private readonly Multiselect roleList;
         private ILogger<MenuController> _logger;
         public ModalView _modalView;
-        public MenuController(MenuRepository menuRepository, BasicConfigurationRepository basicConfigurationRepository, BaseRepository baseRepository, INotyfService notyf, IEmailSender emailSender, ILogger<MenuController> logger, JavaScriptEncoder javaScriptEncoder) : base(basicConfigurationRepository, baseRepository, notyf, emailSender, javaScriptEncoder)
+        public MenuController(MenuRepository menuRepository, INotyfService notyf, IEmailSender emailSender, ILogger<MenuController> logger, JavaScriptEncoder javaScriptEncoder) : base(notyf, emailSender, javaScriptEncoder)
         {
             _menuRepository = menuRepository;
             _responseDto = new ResponseDto<Menu>();
@@ -148,7 +148,7 @@ namespace BusinessManagementSystem.Controllers
                 return RedirectToAction(nameof(Index));
             }
             var item = _menuRepository.GetMenuById(id);
-            _responseDto = _menuRepository.GetById(id);
+            _responseDto = _menuRepository.Delete(item.Data);
             if (_responseDto.StatusCode == HttpStatusCode.OK)
             {
                 _notyf.Success(_responseDto.Message);

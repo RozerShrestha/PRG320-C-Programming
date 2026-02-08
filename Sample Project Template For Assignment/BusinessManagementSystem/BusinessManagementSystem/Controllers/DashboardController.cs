@@ -21,7 +21,7 @@ namespace BusinessManagementSystem.Controllers
         private readonly ILogger<DashboardController> _logger;
         //private readonly ModalView _modalView;
         private ResponseDto<DashboardVM> _responseDto;
-        public DashboardController(BasicConfigurationRepository basicConfigurationRepository, BaseRepository baseRepository, IWebHostEnvironment env, ILogger<DashboardController> logger, INotyfService notyf, IEmailSender emailSender, JavaScriptEncoder javaScriptEncoder) : base(basicConfigurationRepository, baseRepository, notyf, emailSender, javaScriptEncoder)
+        public DashboardController(IWebHostEnvironment env, ILogger<DashboardController> logger, INotyfService notyf, IEmailSender emailSender, JavaScriptEncoder javaScriptEncoder) : base(notyf, emailSender, javaScriptEncoder)
         {
             _env = env;
             _logger = logger;

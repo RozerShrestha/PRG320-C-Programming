@@ -29,7 +29,7 @@ namespace BusinessManagementSystem.Controllers
         private ILogger<UsersController> _logger;
         private readonly ModalView _modalView;
         private readonly dynamic roleList;
-        public UsersController(UserRepository userRepository, BasicConfigurationRepository basicConfigurationRepository, BaseRepository baseRepository, INotyfService notyf, IEmailSender emailSender, ILogger<UsersController> logger, JavaScriptEncoder javaScriptEncoder) : base(basicConfigurationRepository, baseRepository, notyf, emailSender, javaScriptEncoder)
+        public UsersController(UserRepository userRepository, INotyfService notyf, IEmailSender emailSender, ILogger<UsersController> logger, JavaScriptEncoder javaScriptEncoder) : base(notyf, emailSender, javaScriptEncoder)
         {
             _userRepository = userRepository;
             roleList = _userRepository.RoleList();

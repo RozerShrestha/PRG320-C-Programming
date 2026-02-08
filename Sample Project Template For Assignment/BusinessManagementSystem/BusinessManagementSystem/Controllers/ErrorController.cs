@@ -11,7 +11,7 @@ namespace BusinessManagementSystem.Controllers
     [AllowAnonymous]
     public class ErrorController : BaseController
     {
-        public ErrorController(BasicConfigurationRepository basicConfigurationRepository, BaseRepository baseRepository,ILogger<DashboardController> logger, INotyfService notyf, IEmailSender emailSender, JavaScriptEncoder javaScriptEncoder) : base(basicConfigurationRepository,baseRepository, notyf, emailSender, javaScriptEncoder)
+        public ErrorController(ILogger<DashboardController> logger, INotyfService notyf, IEmailSender emailSender, JavaScriptEncoder javaScriptEncoder) : base(notyf, emailSender, javaScriptEncoder)
         {
         }
         public IActionResult Index(int code)

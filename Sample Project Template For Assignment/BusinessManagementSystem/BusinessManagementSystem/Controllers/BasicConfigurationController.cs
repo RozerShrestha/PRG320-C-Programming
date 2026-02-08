@@ -18,7 +18,7 @@ namespace BusinessManagementSystem.Controllers
     {
         private readonly BasicConfigurationRepository _basicConfigurationRepository;
 
-        public BasicConfigurationController(BasicConfigurationRepository basicConfigurationRepository,BaseRepository baseRepository,INotyfService notyf,IEmailSender emailSender,ILogger<BasicConfigurationController> logger,JavaScriptEncoder javaScriptEncoder): base(basicConfigurationRepository, baseRepository, notyf, emailSender, javaScriptEncoder)
+        public BasicConfigurationController(BasicConfigurationRepository basicConfigurationRepository, INotyfService notyf,IEmailSender emailSender,ILogger<BasicConfigurationController> logger,JavaScriptEncoder javaScriptEncoder): base(notyf, emailSender, javaScriptEncoder)
         {
             _basicConfigurationRepository = basicConfigurationRepository;
 

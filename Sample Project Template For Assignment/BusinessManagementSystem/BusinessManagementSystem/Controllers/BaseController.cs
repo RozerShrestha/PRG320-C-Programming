@@ -51,8 +51,6 @@ public abstract class BaseController : Controller
     }
     // Constructor for backward compatibility with existing controllers
     public BaseController(
-        BasicConfigurationRepository basicConfigurationRepository,
-        BaseRepository baseRepository,
         INotyfService notyf,
         IEmailSender emailSender,
         JavaScriptEncoder javaScriptEncoder)

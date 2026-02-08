@@ -23,7 +23,7 @@ namespace BusinessManagementSystem.Controllers
         private ILogger<RoleController> _logger;
         public  ModalView _modalView;
 
-        public RoleController(RoleRepository roleRepository,BasicConfigurationRepository basicConfigurationRepository, BaseRepository baseRepository, IWebHostEnvironment env, INotyfService notyf, IEmailSender emailSender, ILogger<RoleController> logger, JavaScriptEncoder javaScriptEncoder) : base(basicConfigurationRepository, baseRepository, notyf, emailSender, javaScriptEncoder)
+        public RoleController(RoleRepository roleRepository, IWebHostEnvironment env, INotyfService notyf, IEmailSender emailSender, ILogger<RoleController> logger, JavaScriptEncoder javaScriptEncoder) : base(notyf, emailSender, javaScriptEncoder)
         {
             _roleRepository = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
             _env = env;
