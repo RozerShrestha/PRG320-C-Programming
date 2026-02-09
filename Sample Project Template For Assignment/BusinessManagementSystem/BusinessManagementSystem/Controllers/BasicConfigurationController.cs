@@ -33,7 +33,7 @@ namespace BusinessManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error loading basic configuration: {ex.Message}");
+                _logger.LogError($"Error loading basic configurations: {ex.Message}");
                 Notyf?.Error("Error loading configuration");
                 return View(null);
             }

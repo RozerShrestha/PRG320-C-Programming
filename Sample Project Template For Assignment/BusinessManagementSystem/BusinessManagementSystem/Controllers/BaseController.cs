@@ -70,11 +70,6 @@ public abstract class BaseController : Controller
         base.OnActionExecuting(context);
     }
 
-    protected IActionResult HandleError(Exception ex)
-    {
-        return StatusCode(500, new { message = ex.Message });
-    }
-
     private UserDto GetUserDetail()
     {
         try
@@ -112,16 +107,5 @@ public abstract class BaseController : Controller
         return string.IsNullOrEmpty(roleName)
             ? new List<MenuDto>()
             : BaseRepository?.MenuList(roleName) ?? new List<MenuDto>();
-    }
-
-    protected bool IsAuthorized(int userId)
-    {
-        return (CurrentUser?.RoleName == "admin" || CurrentUser?.RoleName == "hradmin")
-               || CurrentUser?.UserId == userId;
-    }
-
-    protected string EncodeString(string text)
-    {
-        return JavaScriptEncoder?.Encode(text) ?? text ?? string.Empty;
     }
 }
