@@ -1,4 +1,4 @@
-﻿using AspNetCore;
+using AspNetCore;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using BusinessManagementSystem.Dto;
 using BusinessManagementSystem.Helper;
@@ -7,75 +7,102 @@ using BusinessManagementSystem.Repositories;
 using BusinessManagementSystem.Services;
 using BusinessManagementSystem.Utility;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using NuGet.Protocol.Plugins;
 using System.Net;
-using System.Text.Encodings.Web;
 
 namespace BusinessManagementSystem.Controllers
 {
     [Authorize]
     public class UsersController : BaseController
     {
-        protected readonly UserRepository _userRepository;
-        public ResponseDto<User> _responseDto;
-        public ResponseDto<UserDto> _responseUserDto;
-        public ResponseDto<UserRoleDto> _responseUserRoleDto;
-        private ILogger<UsersController> _logger;
+        private readonly UserRepository _userRepository;
+        private readonly ILogger<UsersController> _logger;
+        private ResponseDto<User> _responseDto;
+        private ResponseDto<UserDto> _responseUserDto;
+        private ResponseDto<UserRoleDto> _responseUserRoleDto;
         private readonly ModalView _modalView;
-        private readonly dynamic roleList;
-        public UsersController(UserRepository userRepository, INotyfService notyf, IEmailSender emailSender, ILogger<UsersController> logger, JavaScriptEncoder javaScriptEncoder) : base(notyf, emailSender, javaScriptEncoder)
+
+        public UsersController(UserRepository userRepository, ILogger<UsersController> logger)
         {
-            _userRepository = userRepository;
-            roleList = _userRepository.RoleList();
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _responseDto = new ResponseDto<User>();
             _responseUserDto = new ResponseDto<UserDto>();
             _responseUserRoleDto = new ResponseDto<UserRoleDto>();
-            _modalView = new ModalView("Delete Confirmation !", "Delete", "Are you sure to delete the selected User?", "");
-            _logger = logger;
-            
+            _modalView = new ModalView("Delete Confirmation!", "Delete", "Are you sure to delete the selected User?", "");
         }
+
+        private void SetupUserViewData()
+        {
+            try
+            {
+                var roleList = _userRepository.RoleList();
+                ViewData["RoleList"] = new SelectList(roleList, "Id", "Name");
+                ViewBag.OccupationList = new SelectList(SD.Occupations, "Value", "Value");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error setting up user view data: {ex.Message}");
+                Notyf?.Error("Error loading user data");
+            }
+        }
+
         [HttpGet]
         [Authorize(Roles = "superadmin,admin_tattoo")]
         public IActionResult Index()
         {
-            ViewBag.ModalInformation = _modalView;
-            return View(_responseDto);
+            try
+            {
+                ViewBag.ModalInformation = _modalView;
+                return View(_responseDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Index: {ex.Message}");
+                Notyf?.Error("Error loading users page");
+                return View(new ResponseDto<User>());
+            }
         }
 
         [HttpGet]
         public IActionResult Detail(Guid guid)
         {
-            if(guid == Guid.Empty)
+            try
             {
-                _responseDto = _userRepository.GetById(userId);
-                if (_responseDto.StatusCode == HttpStatusCode.OK)
+                if (guid == Guid.Empty)
                 {
-                    guid = _responseDto.Data.Guid;
-                    _responseUserDto = _userRepository.GetUserById(userId);
-                    if(_responseUserDto.StatusCode == HttpStatusCode.OK)
+                    _responseDto = _userRepository.GetById(userId);
+                    if (_responseDto?.StatusCode == HttpStatusCode.OK && _responseDto.Data != null)
                     {
-                        return View(_responseUserDto.Data);
+                        guid = _responseDto.Data.Guid;
+                        _responseUserDto = _userRepository.GetUserById(userId);
+                        if (_responseUserDto?.StatusCode == HttpStatusCode.OK && _responseUserDto.Data != null)
+                        {
+                            return View(_responseUserDto.Data);
+                        }
                     }
-                }
-                return NotFound();
-            }
-            else
-            {
-                _responseUserDto = _userRepository.GetUserByGuid(guid);
-                if (_responseUserDto.StatusCode == HttpStatusCode.OK)
-                {
-                    return View(_responseUserDto.Data);
+                    return NotFound();
                 }
                 else
                 {
-                    return NotFound();
+                    _responseUserDto = _userRepository.GetUserByGuid(guid);
+                    if (_responseUserDto?.StatusCode == HttpStatusCode.OK && _responseUserDto.Data != null)
+                    {
+                        return View(_responseUserDto.Data);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Detail: {ex.Message}");
+                Notyf?.Error("Error loading user details");
+                return NotFound();
             }
         }
 
@@ -83,118 +110,147 @@ namespace BusinessManagementSystem.Controllers
         [Authorize(Roles = "superadmin")]
         public IActionResult Create()
         {
-            ViewData["RoleList"] = new SelectList(roleList, "Id", "Name");
-            ViewBag.OccupationList = new SelectList(SD.Occupations, "Value", "Value");
-            return View();
+            try
+            {
+                SetupUserViewData();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Create: {ex.Message}");
+                Notyf?.Error("Error loading create user page");
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpPost]
         [Authorize(Roles = "superadmin")]
         public IActionResult Create(UserDto userDto, IFormFile? ProfilePictureLink)
         {
-            ViewData["RoleList"] = new SelectList(roleList, "Id", "Name");
-            ViewBag.OccupationList = new SelectList(SD.Occupations, "Value", "Value");
-
-            //validating document upload
-            if (!Helpers.ValidateDocumentUpload(ProfilePictureLink))
+            try
             {
-                _notyf.Warning("Profile Picture Upload Error: Valid files are of extension pdf or jpg or jpeg");
-                return BadRequest("Error saving Profile Picture. Please check valid extensions(pdf,jpeg,jpg,png)");
-            }
+                SetupUserViewData();
 
-
-            if (ModelState.IsValid)
-            {
-                userDto.ProfilePictureLink =ProfilePictureLink==null?string.Empty: Helpers.DocUpload(ProfilePictureLink, "ProfilePicture", username);
-                _responseDto = _userRepository.CreateUser(userDto);
-                if (_responseDto.StatusCode == HttpStatusCode.OK)
+                if (!Helpers.ValidateDocumentUpload(ProfilePictureLink))
                 {
-                    _notyf.Success(_responseDto.Message);
-                    return RedirectToAction(nameof(Index));
-                } 
+                    Notyf?.Warning("Profile Picture Upload Error: Valid files are of extension pdf or jpg or jpeg");
+                    return View(userDto);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    userDto.ProfilePictureLink = ProfilePictureLink == null ? string.Empty : Helpers.DocUpload(ProfilePictureLink, "ProfilePicture", username);
+                    _responseDto = _userRepository.CreateUser(userDto);
+                    if (_responseDto.StatusCode == HttpStatusCode.OK)
+                    {
+                        Notyf?.Success(_responseDto.Message ?? "User created successfully");
+                        _logger.LogInformation($"User {userDto.Email} created successfully");
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        Notyf?.Error(_responseDto.Message ?? "Error creating user");
+                        return View(userDto);
+                    }
+                }
                 else
                 {
-                    _notyf.Error(_responseDto.Message);
+                    var errors = ModelState.Values.SelectMany(v => v.Errors);
+                    foreach (var error in errors)
+                    {
+                        Notyf?.Error(error.ErrorMessage);
+                    }
                     return View(userDto);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                IEnumerable<ModelError> errors = ModelState.Values.SelectMany(v => v.Errors).ToList();
-                foreach (var error in errors)
-                {
-                    _notyf.Error(error.ErrorMessage);
-                }
-                return View(userDto);
+                _logger.LogError($"Error creating user: {ex.Message}");
+                Notyf?.Error($"Error: {ex.Message}");
+                return RedirectToAction(nameof(Index));
             }
         }
 
         public IActionResult Edit(Guid guid)
         {
-            if (guid==Guid.Empty)
+            try
             {
-                return NotFound();
+                if (guid == Guid.Empty)
+                {
+                    return NotFound();
+                }
+
+                SetupUserViewData();
+                _responseUserDto = _userRepository.GetUserByGuid(guid);
+                if (_responseUserDto?.StatusCode == HttpStatusCode.OK && _responseUserDto.Data != null)
+                {
+                    return View(_responseUserDto.Data);
+                }
+                else
+                {
+                    Notyf?.Error("User not found");
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            ViewData["RoleList"] = new SelectList(roleList, "Id", "Name");
-            ViewBag.OccupationList = new SelectList(SD.Occupations, "Value", "Value");
-            var _responseDto = _userRepository.GetUserByGuid(guid);
-            if (_responseDto == null)
-             {
-                return NotFound();
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Edit: {ex.Message}");
+                Notyf?.Error("Error loading edit user page");
+                return RedirectToAction(nameof(Index));
             }
-            return View(_responseDto.Data);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(UserDto userDto, IFormFile? ProfilePictureLink)
-      {
-            ModelState.Remove(nameof(userDto.Password)); //just to ignore ConfirmPassword to validate
-            ModelState.Remove(nameof(userDto.ConfirmPassword)); //just to ignore ConfirmPassword to validate
-            ViewData["RoleList"] = new SelectList(roleList, "Id", "Name");
-            ViewBag.OccupationList = new SelectList(SD.Occupations, "Value", "Value");
-            if(roleName==SD.Role_Superadmin || userId== userDto.UserId)
+        {
+            try
             {
-                if (ModelState.IsValid)
+                ModelState.Remove(nameof(userDto.Password));
+                ModelState.Remove(nameof(userDto.ConfirmPassword));
+                SetupUserViewData();
+
+                if (roleName == SD.Role_Superadmin || userId == userDto.UserId)
                 {
-                    userDto.ProfilePictureLink = ProfilePictureLink == null ? string.Empty : Helpers.DocUpload(ProfilePictureLink, "ProfilePicture", username);
-                    _responseDto = _userRepository.UpdateUser(userDto);
-                    if (_responseDto.StatusCode == HttpStatusCode.OK)
+                    if (ModelState.IsValid)
                     {
-                        _notyf.Success(_responseDto.Message);
+                        userDto.ProfilePictureLink = ProfilePictureLink == null ? string.Empty : Helpers.DocUpload(ProfilePictureLink, "ProfilePicture", username);
+                        _responseDto = _userRepository.UpdateUser(userDto);
+                        if (_responseDto.StatusCode == HttpStatusCode.OK)
+                        {
+                            Notyf?.Success(_responseDto.Message ?? "User updated successfully");
+                            _logger.LogInformation($"User {userDto.Email} updated successfully");
+                            return RedirectToAction(nameof(Index));
+                        }
+                        else
+                        {
+                            Notyf?.Error(_responseDto.Message ?? "Error updating user");
+                            return View(userDto);
+                        }
                     }
                     else
                     {
-                        _notyf.Error(_responseDto.Message);
+                        var errors = ModelState.Values.SelectMany(v => v.Errors);
+                        foreach (var error in errors)
+                        {
+                            Notyf?.Error(error.ErrorMessage);
+                        }
                         return View(userDto);
                     }
-                    return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    IEnumerable<ModelError> errors = ModelState.Values.SelectMany(v => v.Errors).ToList();
-                    foreach (var error in errors)
-                    {
-                        _notyf.Error(error.ErrorMessage);
-                    }
-                    return View(_responseDto.Data);
+                    Notyf?.Warning($"{fullName} is not authorized to perform this task");
+                    _logger.LogWarning($"Unauthorized edit attempt by {username} for user {userDto.UserId}");
+                    return RedirectToAction(nameof(Index));
                 }
             }
-            else
+            catch (Exception ex)
             {
-                _notyf.Warning($"{fullName} is not authroized to perform this task");
+                _logger.LogError($"Error updating user {userDto.UserId}: {ex.Message}");
+                Notyf?.Error($"Error: {ex.Message}");
                 return RedirectToAction(nameof(Index));
             }
-            
-           
-        }
-        
-        
-
-        [HttpGet]
-        public IActionResult Test(Guid id)
-        {
-            return View();
         }
 
         [HttpPost, ActionName("Delete")]
@@ -202,29 +258,37 @@ namespace BusinessManagementSystem.Controllers
         [Authorize(Roles = "superadmin")]
         public IActionResult DeleteConfirmed(int UserId)
         {
-            _responseDto = _userRepository.GetById(UserId);
-            if (_responseDto.Data != null)
+            try
             {
-                try
+                _responseDto = _userRepository.GetById(UserId);
+                if (_responseDto?.Data != null)
                 {
-                    _responseDto=_userRepository.Delete(_responseDto.Data);
-                    return RedirectToAction(nameof(Index));
+                    _responseDto = _userRepository.Delete(_responseDto.Data);
+                    if (_responseDto.StatusCode == HttpStatusCode.OK)
+                    {
+                        Notyf?.Success(_responseDto.Message ?? "User deleted successfully");
+                        _logger.LogInformation($"User {UserId} deleted successfully");
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        Notyf?.Error(_responseDto.Message ?? "Error deleting user");
+                        return NotFound();
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                  _notyf.Error($"Error deleting User due to : {ex.Message}");
-                    return View(_responseDto.Data.Guid);
+                    Notyf?.Error("User not found");
+                    return NotFound();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                _notyf.Error("Error: User not Found");
+                _logger.LogError($"Error deleting user {UserId}: {ex.Message}");
+                Notyf?.Error($"Error deleting user: {ex.Message}");
                 return NotFound();
             }
-            
         }
-
-
 
         #region API CALLS
 
@@ -232,40 +296,71 @@ namespace BusinessManagementSystem.Controllers
         [Authorize(Roles = "superadmin,admin_tattoo")]
         public IActionResult GetAllUser()
         {
-            string who = roleName;
-            if(who==SD.Role_Superadmin)
-                _responseUserRoleDto = _userRepository.GetAllUser(SD.Role_Superadmin);
-            //else
-            //{
-            //    _responseUserRoleDto = _businessLayer.UserService.GetAllUser;
-            //}
+            try
+            {
+                if (roleName == SD.Role_Superadmin)
+                {
+                    _responseUserRoleDto = _userRepository.GetAllUser(SD.Role_Superadmin);
+                }
+                else
+                {
+                    _responseUserRoleDto = new ResponseDto<UserRoleDto>
+                    {
+                        StatusCode = HttpStatusCode.Unauthorized,
+                        Message = "You do not have permission to view all users"
+                    };
+                    return BadRequest(_responseUserRoleDto);
+                }
 
-            if (_responseUserRoleDto.StatusCode == HttpStatusCode.OK)
-            {
-                return Ok(_responseUserRoleDto);
+                if (_responseUserRoleDto?.StatusCode == HttpStatusCode.OK)
+                {
+                    return Ok(_responseUserRoleDto);
+                }
+                else
+                {
+                    return BadRequest(_responseUserRoleDto);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest(_responseUserRoleDto);
+                _logger.LogError($"Error in GetAllUser: {ex.Message}");
+                return StatusCode(500, new ResponseDto<UserRoleDto>
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Message = $"Error: {ex.Message}"
+                });
             }
-            
         }
+
         [Authorize(Roles = "superadmin")]
         [HttpGet]
         public IActionResult Delete(Guid guid)
         {
-            if (guid == Guid.Empty)
+            try
             {
-                _notyf.Error("Something went wrong");
-                return NotFound();
-            }
-            var item = _userRepository.GetUserByGuid(guid);
-            var user= _userRepository.GetById(item.Data.UserId).Data;
-            if (item.StatusCode == HttpStatusCode.OK)
-            {
-                _responseDto = _userRepository.Delete(user);
+                if (guid == Guid.Empty)
+                {
+                    Notyf?.Error("Invalid user ID");
+                    return NotFound();
+                }
+
+                var userResponse = _userRepository.GetUserByGuid(guid);
+                if (userResponse?.Data == null)
+                {
+                    return NotFound();
+                }
+
+                var userById = _userRepository.GetById(userResponse.Data.UserId);
+                if (userById?.Data == null)
+                {
+                    return NotFound();
+                }
+
+                _responseDto = _userRepository.Delete(userById.Data);
                 if (_responseDto.StatusCode == HttpStatusCode.OK)
                 {
+                    Notyf?.Success(_responseDto.Message ?? "User deleted successfully");
+                    _logger.LogInformation($"User {guid} deleted successfully via API");
                     return Ok();
                 }
                 else
@@ -273,11 +368,13 @@ namespace BusinessManagementSystem.Controllers
                     return BadRequest();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest();
+                _logger.LogError($"Error deleting user via API {guid}: {ex.Message}");
+                return StatusCode(500, new { message = ex.Message });
             }
         }
+
         #endregion
     }
 }

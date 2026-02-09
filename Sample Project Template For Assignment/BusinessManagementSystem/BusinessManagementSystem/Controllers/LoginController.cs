@@ -1,4 +1,4 @@
-﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using BusinessManagementSystem.Dto;
 using BusinessManagementSystem.Models;
 using BusinessManagementSystem.Services;
@@ -13,15 +13,17 @@ namespace BusinessManagementSystem.Controllers
     [AllowAnonymous]
     public class LoginController : Controller
     {
-        ILogin<LoginResponseDto> _iLogin;
-        ResponseDto<LoginResponseDto> _responseDto;
-        protected readonly INotyfService _notyf;
-        public LoginController(ILogin<LoginResponseDto> iLogin, INotyfService notyf) 
-        { 
-            _iLogin = iLogin;
-            _responseDto= new ResponseDto<LoginResponseDto>();
-            _notyf = notyf;
+        private readonly ILogin<LoginResponseDto> _iLogin;
+        private readonly INotyfService _notyf;
+        private readonly ILogger<LoginController> _logger;
+
+        public LoginController(ILogin<LoginResponseDto> iLogin, INotyfService notyf, ILogger<LoginController> logger)
+        {
+            _iLogin = iLogin ?? throw new ArgumentNullException(nameof(iLogin));
+            _notyf = notyf ?? throw new ArgumentNullException(nameof(notyf));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
         public IActionResult Index()
         {
             return View();
@@ -31,26 +33,46 @@ namespace BusinessManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult LoginUser(LoginRequestDto loginRequest)
         {
-            ModelState.Remove(nameof(loginRequest.ConfirmPassword)); //just to ignore ConfirmPassword to validate
-            if (ModelState.IsValid)
+            try
             {
-                _responseDto = _iLogin.Login(loginRequest);
-                if (_responseDto.StatusCode == HttpStatusCode.OK)
+                ModelState.Remove(nameof(loginRequest.ConfirmPassword));
+                
+                if (ModelState.IsValid)
                 {
-                    HttpContext.Session.SetString("Token", _responseDto.Data.Token);
-                    ViewBag.Message = _responseDto.Message;
-                    _notyf.Success(_responseDto.Message);
-                    return RedirectToAction("Index", "Dashboard");
+                    var response = _iLogin.Login(loginRequest);
+                    if (response.StatusCode == HttpStatusCode.OK && response.Data != null)
+                    {
+                        HttpContext.Session.SetString("Token", response.Data.Token);
+                        _notyf.Success(response.Message ?? "Login successful");
+                        _logger.LogInformation($"User {loginRequest.Username} logged in successfully");
+                        return RedirectToAction("Index", "Dashboard");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", response.Message ?? "Login failed");
+                        _logger.LogWarning($"Login failed for user {loginRequest.Username}");
+                        ViewBag.LoginResponse = response;
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError("", _responseDto.Message);
+                    var errors = ModelState.Values.SelectMany(v => v.Errors);
+                    foreach (var error in errors)
+                    {
+                        _notyf.Error(error.ErrorMessage);
+                    }
                 }
-                ViewBag.LoginResponse = _responseDto;
+
+                return View("Index", loginRequest);
             }
-            
-            return View("Index",loginRequest); ;
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error during login: {ex.Message}");
+                _notyf.Error("An error occurred during login. Please try again.");
+                return View("Index", loginRequest);
+            }
         }
+
         public IActionResult Register()
         {
             return View();
@@ -60,78 +82,151 @@ namespace BusinessManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult RegisterUser(UserDto userDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                bool passwordMatch = userDto.Password == userDto.ConfirmPassword ? true : false;
-               _responseDto = _iLogin.Register_User(userDto);
-                if(_responseDto.StatusCode!= HttpStatusCode.OK) 
+                if (ModelState.IsValid)
                 {
-                    _notyf.Error(_responseDto.Message);
-                    ViewBag.RegisterResponse = _responseDto;
+                    if (userDto.Password != userDto.ConfirmPassword)
+                    {
+                        _notyf.Error("Passwords do not match");
+                        return View("Register", userDto);
+                    }
+
+                    var response = _iLogin.Register_User(userDto);
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        _notyf.Success(response.Message ?? "Registration successful");
+                        _logger.LogInformation($"User {userDto.Email} registered successfully");
+                        return View("Index");
+                    }
+                    else
+                    {
+                        _notyf.Error(response.Message ?? "Registration failed");
+                        _logger.LogWarning($"Registration failed for {userDto.Email}: {response.Message}");
+                        ViewBag.RegisterResponse = response;
+                    }
                 }
                 else
                 {
-                    _notyf.Success(_responseDto.Message);
-                    ViewBag.LoginResponse = _responseDto;
-                    return View("Index");
+                    var errors = ModelState.Values.SelectMany(v => v.Errors);
+                    foreach (var error in errors)
+                    {
+                        _notyf.Error(error.ErrorMessage);
+                    }
                 }
-                
+
+                return View("Register", userDto);
             }
-            return View("Register");
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error during registration: {ex.Message}");
+                _notyf.Error("An error occurred during registration. Please try again.");
+                return View("Register", userDto);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ForgotPassword(LoginRequestDto loginRequestDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _responseDto = _iLogin.ForgotPassword(loginRequestDto);
-                if (_responseDto.StatusCode != HttpStatusCode.OK)
+                if (ModelState.IsValid)
                 {
-                    _notyf.Error(_responseDto.Message);
-                    ViewBag.RegisterResponse = _responseDto;
+                    var response = _iLogin.ForgotPassword(loginRequestDto);
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        _notyf.Success(response.Message ?? "Password reset successful");
+                        _logger.LogInformation($"Password reset requested for {loginRequestDto.Username}");
+                        ViewBag.LoginResponse = response;
+                    }
+                    else
+                    {
+                        _notyf.Error(response.Message ?? "Password reset failed");
+                        _logger.LogWarning($"Password reset failed for {loginRequestDto.Username}: {response.Message}");
+                        ViewBag.RegisterResponse = response;
+                    }
                 }
                 else
                 {
-                    _notyf.Success(_responseDto.Message);
-                    ViewBag.LoginResponse = _responseDto;
+                    var errors = ModelState.Values.SelectMany(v => v.Errors);
+                    foreach (var error in errors)
+                    {
+                        _notyf.Error(error.ErrorMessage);
+                    }
                 }
-            }
+
                 return View("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error during password reset: {ex.Message}");
+                _notyf.Error("An error occurred during password reset. Please try again.");
+                return View("Index");
+            }
         }
+
         public IActionResult Logout([FromQuery] string returnUrl)
         {
-            HttpContext.Session.Remove("Token");
-            return RedirectToAction("Index");
+            try
+            {
+                HttpContext.Session.Remove("Token");
+                _logger.LogInformation("User logged out successfully");
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error during logout: {ex.Message}");
+                return RedirectToAction("Index");
+            }
         }
 
-
         #region API
+
         [HttpPost]
         public IActionResult LoginUserAPI(LoginRequestDto loginRequest)
         {
-            ModelState.Remove(nameof(loginRequest.ConfirmPassword)); //just to ignore ConfirmPassword to validate
-            if (ModelState.IsValid)
+            try
             {
-                _responseDto = _iLogin.Login(loginRequest);
-                if (_responseDto.StatusCode == HttpStatusCode.OK)
+                ModelState.Remove(nameof(loginRequest.ConfirmPassword));
+                
+                if (ModelState.IsValid)
                 {
-                    HttpContext.Session.SetString("Token", _responseDto.Data.Token);
-                    _notyf.Success(_responseDto.Message);
-                    return Ok(_responseDto);
+                    var response = _iLogin.Login(loginRequest);
+                    if (response.StatusCode == HttpStatusCode.OK && response.Data != null)
+                    {
+                        HttpContext.Session.SetString("Token", response.Data.Token);
+                        _notyf.Success(response.Message ?? "Login successful");
+                        _logger.LogInformation($"API login successful for {loginRequest.Username}");
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", response.Message ?? "Login failed");
+                        _logger.LogWarning($"API login failed for {loginRequest.Username}");
+                        return BadRequest(response);
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError("", _responseDto.Message);
-                    return BadRequest(_responseDto);
+                    _logger.LogWarning($"API login validation failed");
+                    return BadRequest(new ResponseDto<LoginResponseDto> 
+                    { 
+                        StatusCode = HttpStatusCode.BadRequest,
+                        Message = "Validation failed",
+                        Data = null
+                    });
                 }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest(_responseDto);
+                _logger.LogError($"Error during API login: {ex.Message}");
+                return StatusCode(500, new ResponseDto<LoginResponseDto>
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Message = $"Error: {ex.Message}"
+                });
             }
-
         }
 
         #endregion

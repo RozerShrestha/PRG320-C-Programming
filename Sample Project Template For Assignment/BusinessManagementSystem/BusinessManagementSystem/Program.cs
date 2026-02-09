@@ -36,8 +36,6 @@ builder.Services.AddScoped<ILogin<LoginResponseDto>, LoginRepository>();
 builder.Services.AddScoped<BaseRepository>();
 builder.Services.AddScoped<IBase>(sp => sp.GetRequiredService<BaseRepository>());
 
-builder.Services.AddScoped<IBasicConfiguration>(sp => sp.GetRequiredService<BasicConfigurationRepository>());
-
 builder.Services.AddScoped<BasicConfigurationRepository>();
 builder.Services.AddScoped<IBasicConfiguration>(sp => sp.GetRequiredService<BasicConfigurationRepository>());
 
@@ -50,7 +48,7 @@ builder.Services.AddScoped<IRole>(sp => sp.GetRequiredService<RoleRepository>())
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IUser>(sp => sp.GetRequiredService<UserRepository>());
 
-
+builder.Services.AddScoped<ITokenService, TokenRepository>();
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();

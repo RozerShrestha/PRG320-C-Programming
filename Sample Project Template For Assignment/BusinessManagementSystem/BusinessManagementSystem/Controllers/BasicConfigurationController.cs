@@ -1,11 +1,10 @@
-﻿using AspNetCore;
+using AspNetCore;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using BusinessManagementSystem.Dto;
 using BusinessManagementSystem.Models;
 using BusinessManagementSystem.Repositories;
 using BusinessManagementSystem.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Net;
@@ -17,43 +16,64 @@ namespace BusinessManagementSystem.Controllers
     public class BasicConfigurationController : BaseController
     {
         private readonly BasicConfigurationRepository _basicConfigurationRepository;
+        private readonly ILogger<BasicConfigurationController> _logger;
 
-        public BasicConfigurationController(BasicConfigurationRepository basicConfigurationRepository, INotyfService notyf,IEmailSender emailSender,ILogger<BasicConfigurationController> logger,JavaScriptEncoder javaScriptEncoder): base(notyf, emailSender, javaScriptEncoder)
+        public BasicConfigurationController(BasicConfigurationRepository basicConfigurationRepository, ILogger<BasicConfigurationController> logger)
         {
-            _basicConfigurationRepository = basicConfigurationRepository;
-
+            _basicConfigurationRepository = basicConfigurationRepository ?? throw new ArgumentNullException(nameof(basicConfigurationRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public IActionResult Index()
         {
-            var response = _basicConfigurationRepository.GetSingleOrDefault();
-            return View(response.Data);
+            try
+            {
+                var response = _basicConfigurationRepository.GetSingleOrDefault();
+                return View(response?.Data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error loading basic configuration: {ex.Message}");
+                Notyf?.Error("Error loading configuration");
+                return View(null);
+            }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Update(BasicConfiguration basicConfiguration)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                if (!ModelState.IsValid)
                 {
-                    _notyf.Error(error.ErrorMessage);
+                    var errors = ModelState.Values.SelectMany(v => v.Errors);
+                    foreach (var error in errors)
+                    {
+                        Notyf?.Error(error.ErrorMessage);
+                    }
+                    return View(basicConfiguration);
                 }
+
+                var response = _basicConfigurationRepository.Update(basicConfiguration);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    Notyf?.Success(response.Message ?? "Configuration updated successfully");
+                }
+                else
+                {
+                    Notyf?.Error(response.Message ?? "Error updating configuration");
+                    _logger.LogError($"Error updating configuration: {response.Message}");
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-
-            var response = _basicConfigurationRepository.Update(basicConfiguration);
-            if (response.StatusCode == HttpStatusCode.OK)
+            catch (Exception ex)
             {
-                _notyf.Success("Update successful");
+                _logger.LogError($"Error in Update: {ex.Message}");
+                Notyf?.Error($"Error: {ex.Message}");
+                return RedirectToAction(nameof(Index));
             }
-            else
-            {
-                _notyf.Error(response.Message ?? "Update failed");
-            }
-
-            return RedirectToAction(nameof(Index));
         }
     }
-
 }

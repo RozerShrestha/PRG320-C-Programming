@@ -1,4 +1,4 @@
-﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using BusinessManagementSystem.Models;
 using BusinessManagementSystem.Repositories;
 using BusinessManagementSystem.Services;
@@ -11,26 +11,37 @@ namespace BusinessManagementSystem.Controllers
     [AllowAnonymous]
     public class ErrorController : BaseController
     {
-        public ErrorController(ILogger<DashboardController> logger, INotyfService notyf, IEmailSender emailSender, JavaScriptEncoder javaScriptEncoder) : base(notyf, emailSender, javaScriptEncoder)
+        private readonly ILogger<ErrorController> _logger;
+
+        public ErrorController(ILogger<ErrorController> logger)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
         public IActionResult Index(int code)
         {
+            _logger.LogWarning($"Error page accessed with code: {code}");
             return View();
         }
+
         public IActionResult PageNotFound()
         {
-            _notyf.Warning("Page Not Found");
+            Notyf?.Warning("Page Not Found");
+            _logger.LogWarning("404 - Page not found");
             return View();
         }
+
         public IActionResult AccessDenied()
         {
-            _notyf.Warning("you tried to view unauthorized data, your access log is saved and forwarded to HR");
+            Notyf?.Warning("You tried to view unauthorized data. Your access log has been saved and forwarded to HR");
+            _logger.LogWarning("403 - Access denied");
             return View();
         }
+
         public IActionResult PageNotAllowed()
         {
-            _notyf.Warning("Page not allowed");
+            Notyf?.Warning("Page not allowed");
+            _logger.LogWarning("405 - Method not allowed");
             return View();
         }
     }

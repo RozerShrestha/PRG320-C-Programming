@@ -13,22 +13,24 @@ namespace BusinessManagementSystem.Repositories
 {
     public class LoginRepository : ILogin<LoginResponseDto>
     {
-        ApplicationDBContext _db;
-        ResponseDto<LoginResponseDto> _responseDto;
+        private readonly ApplicationDBContext _db;
+        private readonly ResponseDto<LoginResponseDto> _responseDto;
         private readonly IMapper _mapper;
-        LoginResponseDto _loginResponse;
-        readonly IConfiguration _config;
-        readonly TokenRepository _tokenRepository;
-        JwtSecurityToken generatedToken = null;
-        public LoginRepository(ApplicationDBContext db, IConfiguration config, IMapper mapper)
+        private readonly LoginResponseDto _loginResponse;
+        private readonly IConfiguration _config;
+        private readonly ITokenService _tokenRepository;
+        private readonly ILogger<LoginRepository> _logger;
+        private JwtSecurityToken generatedToken = null;
+
+        public LoginRepository(ApplicationDBContext db, IConfiguration config, IMapper mapper, ITokenService tokenRepository, ILogger<LoginRepository> logger)
         {
-            _db = db;
-            _config = config;
-            mapper = mapper;
-            _tokenRepository = new TokenRepository();
+            _db = db ?? throw new ArgumentNullException(nameof(db));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _tokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _responseDto = new ResponseDto<LoginResponseDto>();
             _loginResponse = new LoginResponseDto();
-
         }
         public ResponseDto<LoginResponseDto> Login(LoginRequestDto l)
         {
