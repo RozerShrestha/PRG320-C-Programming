@@ -16,11 +16,13 @@ namespace BusinessManagementSystem.Controllers
         ILogin<LoginResponseDto> _iLogin;
         ResponseDto<LoginResponseDto> _responseDto;
         protected readonly INotyfService _notyf;
-        public LoginController(ILogin<LoginResponseDto> iLogin, INotyfService notyf) 
+        private readonly ILogger<LoginController> _logger;
+        public LoginController(ILogin<LoginResponseDto> iLogin, INotyfService notyf, ILogger<LoginController> logger) 
         { 
             _iLogin = iLogin;
             _responseDto= new ResponseDto<LoginResponseDto>();
             _notyf = notyf;
+            _logger = logger;
         }
         public IActionResult Index()
         {
@@ -40,10 +42,12 @@ namespace BusinessManagementSystem.Controllers
                     HttpContext.Session.SetString("Token", _responseDto.Data.Token);
                     ViewBag.Message = _responseDto.Message;
                     _notyf.Success(_responseDto.Message);
+                    _logger.LogInformation("User {Username} logged in successfully.", loginRequest.Username);
                     return RedirectToAction("Index", "Dashboard");
                 }
                 else
                 {
+                    _logger.LogError("User {Username} logged in unsuccessful.", loginRequest.Username);
                     ModelState.AddModelError("", _responseDto.Message);
                 }
                 ViewBag.LoginResponse = _responseDto;

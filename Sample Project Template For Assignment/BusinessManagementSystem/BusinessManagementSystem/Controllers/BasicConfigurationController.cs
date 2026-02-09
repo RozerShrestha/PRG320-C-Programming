@@ -4,6 +4,7 @@ using BusinessManagementSystem.Dto;
 using BusinessManagementSystem.Models;
 using BusinessManagementSystem.Repositories;
 using BusinessManagementSystem.Services;
+using BusinessManagementSystem.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +14,16 @@ using System.Text.Encodings.Web;
 
 namespace BusinessManagementSystem.Controllers
 {
-    [Authorize(Roles = "superadmin,admin_tattoo,admin_kaffe,admin_apartment")]
+    [Authorize(Roles =SD.Roles_SuperadminAndAdmin)]
     public class BasicConfigurationController : BaseController
     {
         private readonly BasicConfigurationRepository _basicConfigurationRepository;
+        private readonly ILogger<BasicConfigurationController> _logger;
 
         public BasicConfigurationController(BasicConfigurationRepository basicConfigurationRepository, INotyfService notyf,IEmailSender emailSender,ILogger<BasicConfigurationController> logger,JavaScriptEncoder javaScriptEncoder): base(notyf, emailSender, javaScriptEncoder)
         {
             _basicConfigurationRepository = basicConfigurationRepository;
+            _logger=logger;
 
         }
 
