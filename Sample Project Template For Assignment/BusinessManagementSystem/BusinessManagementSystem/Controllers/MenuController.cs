@@ -23,11 +23,11 @@ namespace BusinessManagementSystem.Controllers
         private ResponseDto<Menu> _responseDto;
         private readonly ModalView _modalView;
 
-        public MenuController(MenuRepository menuRepository, ILogger<MenuController> logger, ResponseDto<Menu> responseDto)
+        public MenuController(MenuRepository menuRepository, ILogger<MenuController> logger)
         {
             _menuRepository = menuRepository ?? throw new ArgumentNullException(nameof(menuRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _responseDto = responseDto;
+            _responseDto = new ResponseDto<Menu>();
             _modalView = new ModalView("Delete Confirmation!", "Delete", "Are you sure to delete the selected Menu?", "");
         }
 
