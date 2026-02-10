@@ -1,0 +1,118 @@
+@model IEnumerable<PropertyRentalSystem.Models.Booking>
+@{
+    ViewData["Title"] = "My Bookings";
+    var statusFilter = ViewData["StatusFilter"]?.ToString() ?? "All";
+}
+
+<div class="container mt-4">
+    <h1><i class="bi bi-calendar-check"></i> My Bookings</h1>
+    <p class="lead">Manage your property bookings</p>
+    
+    <hr />
+    
+    <!-- Status Filter -->
+    <div class="mb-4">
+        <div class="btn-group" role="group">
+            <a asp-action="MyBookings" asp-route-statusFilter="All" 
+               class="btn @(statusFilter == "All" ? "btn-primary" : "btn-outline-primary")">
+                All
+            </a>
+            <a asp-action="MyBookings" asp-route-statusFilter="Pending" 
+               class="btn @(statusFilter == "Pending" ? "btn-primary" : "btn-outline-primary")">
+                Pending
+            </a>
+            <a asp-action="MyBookings" asp-route-statusFilter="Confirmed" 
+               class="btn @(statusFilter == "Confirmed" ? "btn-primary" : "btn-outline-primary")">
+                Confirmed
+            </a>
+            <a asp-action="MyBookings" asp-route-statusFilter="Completed" 
+               class="btn @(statusFilter == "Completed" ? "btn-primary" : "btn-outline-primary")">
+                Completed
+            </a>
+            <a asp-action="MyBookings" asp-route-statusFilter="Cancelled" 
+               class="btn @(statusFilter == "Cancelled" ? "btn-primary" : "btn-outline-primary")">
+                Cancelled
+            </a>
+        </div>
+    </div>
+    
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var booking in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">Booking #@booking.Id</span>
+                                @switch (booking.Status.ToString())
+                                {
+                                    case "Pending":
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                        break;
+                                    case "Confirmed":
+                                        <span class="badge bg-success">Confirmed</span>
+                                        break;
+                                    case "Completed":
+                                        <span class="badge bg-info">Completed</span>
+                                        break;
+                                    case "Cancelled":
+                                        <span class="badge bg-danger">Cancelled</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">@booking.Status</span>
+                                        break;
+                                }
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @if (booking.Property != null)
+                            {
+                                <h5 class="card-title">@booking.Property.Title</h5>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-geo-alt"></i> @booking.Property.City, @booking.Property.Country
+                                </p>
+                            }
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar-event"></i> 
+                                    @booking.CheckInDate.ToString("MMM dd, yyyy") - @booking.CheckOutDate.ToString("MMM dd, yyyy")
+                                </small>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-people"></i> @booking.NumberOfGuests guests
+                                </small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong class="text-primary">Total: $@booking.TotalPrice</strong>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <a asp-action="Details" asp-route-id="@booking.Id" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <small class="text-muted">
+                                Booked on @booking.CreatedAt.ToString("MMM dd, yyyy")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> You don't have any bookings yet.
+            <a asp-controller="WebProperties" asp-action="Index" class="alert-link">Browse properties</a> to make your first booking!
+        </div>
+    }
+</div>

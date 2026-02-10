@@ -1,0 +1,235 @@
+@model PropertyRentalSystem.Models.Property
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-4">
+    <!-- Property Header -->
+    <div class="mb-4">
+        <h1>@Model.Title</h1>
+        <p class="text-muted">
+            <i class="bi bi-geo-alt"></i> @Model.Address, @Model.City, @Model.Country @Model.ZipCode
+        </p>
+    </div>
+
+    <div class="row">
+        <!-- Left Column - Images and Description -->
+        <div class="col-lg-8">
+            <!-- Property Images -->
+            @if (Model.Images != null && Model.Images.Any())
+            {
+                <div id="propertyCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < Model.Images.Count; i++)
+                        {
+                            var image = Model.Images.ElementAt(i);
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@image.ImageUrl" class="d-block w-100" alt="@Model.Title" style="height: 500px; object-fit: cover;">
+                            </div>
+                        }
+                    </div>
+                    @if (Model.Images.Count > 1)
+                    {
+                        <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    }
+                </div>
+            }
+            else
+            {
+                <img src="https://via.placeholder.com/800x500?text=No+Image+Available" class="img-fluid rounded mb-4" alt="No Image" />
+            }
+
+            <!-- Property Details -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="bi bi-info-circle"></i> About This Property</h4>
+                    <hr />
+                    <p>@Model.Description</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-3 text-center">
+                            <i class="bi bi-people-fill text-primary" style="font-size: 2rem;"></i>
+                            <p class="mb-0 mt-2"><strong>@Model.MaxGuests</strong></p>
+                            <small class="text-muted">Guests</small>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="bi bi-door-closed-fill text-primary" style="font-size: 2rem;"></i>
+                            <p class="mb-0 mt-2"><strong>@Model.Bedrooms</strong></p>
+                            <small class="text-muted">Bedrooms</small>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="bi bi-droplet-fill text-primary" style="font-size: 2rem;"></i>
+                            <p class="mb-0 mt-2"><strong>@Model.Bathrooms</strong></p>
+                            <small class="text-muted">Bathrooms</small>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="bi bi-currency-dollar text-primary" style="font-size: 2rem;"></i>
+                            <p class="mb-0 mt-2"><strong>$@Model.PricePerNight</strong></p>
+                            <small class="text-muted">Per Night</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            @if (Model.Reviews != null && Model.Reviews.Any())
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title"><i class="bi bi-star-fill text-warning"></i> Guest Reviews</h4>
+                        <hr />
+                        
+                        @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt).Take(5))
+                        {
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <strong>@review.Guest?.FirstName @review.Guest?.LastName</strong>
+                                    <span class="text-muted">@review.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                </div>
+                                <div>
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= review.Rating)
+                                        {
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star text-muted"></i>
+                                        }
+                                    }
+                                </div>
+                                <p class="mt-2">@review.Comment</p>
+                                @if (review != Model.Reviews.OrderByDescending(r => r.CreatedAt).Take(5).Last())
+                                {
+                                    <hr />
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Right Column - Booking Card -->
+        <div class="col-lg-4">
+            <div class="card shadow sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h3 class="text-primary mb-3">$@Model.PricePerNight <small class="text-muted">/night</small></h3>
+                    
+                    @if (Context.Session.IsAuthenticated())
+                    {
+                        @if (!Context.Session.IsInRole("Host"))
+                        {
+                            <form asp-controller="WebBookings" asp-action="Create" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="PropertyId" value="@Model.Id" />
+                                
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="bi bi-calendar-event"></i> Check-in Date</label>
+                                    <input type="date" name="CheckInDate" class="form-control" required 
+                                           min="@DateTime.Today.ToString("yyyy-MM-dd")" 
+                                           value="@(ViewData["CheckIn"] != null ? ((DateTime)ViewData["CheckIn"]).ToString("yyyy-MM-dd") : "")" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="bi bi-calendar-x"></i> Check-out Date</label>
+                                    <input type="date" name="CheckOutDate" class="form-control" required 
+                                           min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")"
+                                           value="@(ViewData["CheckOut"] != null ? ((DateTime)ViewData["CheckOut"]).ToString("yyyy-MM-dd") : "")" />
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="bi bi-people"></i> Number of Guests</label>
+                                    <input type="number" name="NumberOfGuests" class="form-control" 
+                                           min="1" max="@Model.MaxGuests" required 
+                                           value="@(ViewData["Guests"] ?? 1)" />
+                                    <small class="text-muted">Max @Model.MaxGuests guests</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="bi bi-chat-left-text"></i> Special Requests (Optional)</label>
+                                    <textarea name="SpecialRequests" class="form-control" rows="3" 
+                                              placeholder="Any special requirements?"></textarea>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-calendar-check"></i> Book Now
+                                    </button>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> You cannot book properties as a Host.
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> Please login to book this property.
+                        </div>
+                        <a asp-controller="WebAccount" asp-action="Login" 
+                           asp-route-returnUrl="@($"/WebProperties/Details/{Model.Id}")" 
+                           class="btn btn-primary w-100">
+                            <i class="bi bi-box-arrow-in-right"></i> Login to Book
+                        </a>
+                    }
+                    
+                    <hr />
+                    
+                    <div class="text-center">
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-arrow-left"></i> Back to Properties
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Host Information -->
+            @if (Model.Owner != null)
+            {
+                <div class="card shadow mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-person-circle"></i> Hosted By</h5>
+                        <hr />
+                        <p class="mb-1"><strong>@Model.Owner.FirstName @Model.Owner.LastName</strong></p>
+                        <p class="text-muted mb-0">
+                            <small><i class="bi bi-calendar3"></i> Joined @Model.Owner.CreatedAt.ToString("MMMM yyyy")</small>
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-calculate checkout date minimum based on checkin
+        const checkinInput = document.querySelector('input[name="CheckInDate"]');
+        const checkoutInput = document.querySelector('input[name="CheckOutDate"]');
+        
+        if (checkinInput && checkoutInput) {
+            checkinInput.addEventListener('change', function() {
+                const checkinDate = new Date(this.value);
+                checkinDate.setDate(checkinDate.getDate() + 1);
+                const minCheckout = checkinDate.toISOString().split('T')[0];
+                checkoutInput.setAttribute('min', minCheckout);
+                if (checkoutInput.value && checkoutInput.value <= this.value) {
+                    checkoutInput.value = minCheckout;
+                }
+            });
+        }
+    </script>
+}

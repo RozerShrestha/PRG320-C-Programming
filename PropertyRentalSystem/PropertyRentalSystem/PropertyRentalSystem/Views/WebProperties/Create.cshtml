@@ -1,0 +1,140 @@
+@model PropertyRentalSystem.Controllers.WebPropertiesController.PropertyCreateViewModel
+@{
+    ViewData["Title"] = "List Your Property";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0"><i class="bi bi-house-add"></i> List Your Property</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <!-- Property Basic Information -->
+                        <h5 class="mb-3"><i class="bi bi-info-circle"></i> Basic Information</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" placeholder="e.g., Cozy Downtown Apartment" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="5" 
+                                      placeholder="Describe your property, amenities, and what makes it special..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Location -->
+                        <h5 class="mb-3"><i class="bi bi-geo-alt"></i> Location</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label"></label>
+                            <input asp-for="Address" class="form-control" placeholder="e.g., 123 Main Street" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="City" class="form-label"></label>
+                                <input asp-for="City" class="form-control" placeholder="e.g., New York" />
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Country" class="form-label"></label>
+                                <input asp-for="Country" class="form-control" placeholder="e.g., USA" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="ZipCode" class="form-label"></label>
+                                <input asp-for="ZipCode" class="form-control" placeholder="e.g., 10001" />
+                                <span asp-validation-for="ZipCode" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Property Details -->
+                        <h5 class="mb-3"><i class="bi bi-house-door"></i> Property Details</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="PricePerNight" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="PricePerNight" class="form-control" type="number" step="0.01" min="1" />
+                                </div>
+                                <span asp-validation-for="PricePerNight" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="MaxGuests" class="form-label"></label>
+                                <input asp-for="MaxGuests" class="form-control" type="number" min="1" />
+                                <span asp-validation-for="MaxGuests" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Bedrooms" class="form-label"></label>
+                                <input asp-for="Bedrooms" class="form-control" type="number" min="1" />
+                                <span asp-validation-for="Bedrooms" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Bathrooms" class="form-label"></label>
+                                <input asp-for="Bathrooms" class="form-control" type="number" min="1" />
+                                <span asp-validation-for="Bathrooms" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Images -->
+                        <h5 class="mb-3"><i class="bi bi-images"></i> Property Images</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="ImageUrls" class="form-label"></label>
+                            <textarea asp-for="ImageUrls" class="form-control" rows="6" 
+                                      placeholder="Enter image URLs, one per line. Example:&#10;https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&#10;https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"></textarea>
+                            <small class="form-text text-muted">
+                                ?? Tip: Use free images from <a href="https://unsplash.com" target="_blank">Unsplash</a>. 
+                                Right-click on an image ? Copy Image Address, then paste here (one URL per line).
+                            </small>
+                            <span asp-validation-for="ImageUrls" class="text-danger"></span>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-lightbulb"></i> <strong>Example Image URLs:</strong><br />
+                            <small>
+                                • https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800<br />
+                                • https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800
+                            </small>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                            <a asp-action="MyProperties" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> List Property
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
