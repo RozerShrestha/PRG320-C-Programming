@@ -1,0 +1,119 @@
+@model IEnumerable<PropertyRentalSystem.Models.Property>
+@{
+    ViewData["Title"] = "My Properties";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="bi bi-building"></i> My Properties</h1>
+            <p class="text-muted">Manage your property listings</p>
+        </div>
+        <a asp-action="Create" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle"></i> Add New Property
+        </a>
+    </div>
+
+    <hr />
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var property in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm @(property.IsActive ? "" : "border-warning")">
+                        @if (!property.IsActive)
+                        {
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-warning text-dark">Inactive</span>
+                            </div>
+                        }
+                        
+                        @if (property.Images?.Any() == true)
+                        {
+                            <img src="@property.Images.First().ImageUrl" class="card-img-top" alt="@property.Title" 
+                                 style="height: 200px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <img src="https://via.placeholder.com/400x200?text=No+Image" class="card-img-top" alt="No Image" />
+                        }
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">@property.Title</h5>
+                            <p class="text-muted">
+                                <i class="bi bi-geo-alt"></i> @property.City, @property.Country
+                            </p>
+                            <p class="card-text">
+                                @(property.Description.Length > 100 ? property.Description.Substring(0, 100) + "..." : property.Description)
+                            </p>
+                            
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <small class="text-muted">
+                                        <i class="bi bi-people"></i><br />
+                                        @property.MaxGuests guests
+                                    </small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">
+                                        <i class="bi bi-door-closed"></i><br />
+                                        @property.Bedrooms beds
+                                    </small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">
+                                        <i class="bi bi-droplet"></i><br />
+                                        @property.Bathrooms baths
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 text-success mb-0">
+                                    $@property.PricePerNight<small class="text-muted">/night</small>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-transparent">
+                            <div class="d-grid gap-2">
+                                <a asp-action="Details" asp-route-id="@property.Id" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye"></i> View Details
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@property.Id" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-pencil"></i> Edit Property
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-light">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3"></i> Listed on @property.CreatedAt.ToString("MMM dd, yyyy")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-house-slash text-muted" style="font-size: 4rem;"></i>
+            <h3 class="mt-3 text-muted">No Properties Listed Yet</h3>
+            <p class="text-muted">Start earning by listing your first property!</p>
+            <a asp-action="Create" class="btn btn-success btn-lg mt-3">
+                <i class="bi bi-plus-circle"></i> Add Your First Property
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        transition: transform 0.3s ease;
+    }
+</style>

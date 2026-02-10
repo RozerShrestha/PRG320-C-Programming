@@ -1,0 +1,58 @@
+@model IEnumerable<PropertyRentalSystem.Models.Property>
+@{
+    ViewData["Title"] = "Browse Properties";
+}
+
+<div class="container mt-4">
+    <h1><i class="bi bi-building"></i> Browse Properties</h1>
+    <p class="lead">Find your perfect rental property</p>
+    
+    <hr />
+    
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var property in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        @if (property.Images?.Any() == true)
+                        {
+                            <img src="@property.Images.First().ImageUrl" class="card-img-top" alt="@property.Title" style="height: 200px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <img src="https://via.placeholder.com/400x200?text=No+Image" class="card-img-top" alt="No Image" />
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@property.Title</h5>
+                            <p class="text-muted">
+                                <i class="bi bi-geo-alt"></i> @property.City, @property.Country
+                            </p>
+                            <p class="card-text">@(property.Description.Length > 100 ? property.Description.Substring(0, 100) + "..." : property.Description)</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 text-primary mb-0">$@property.PricePerNight<small>/night</small></span>
+                                <a asp-action="Details" asp-route-id="@property.Id" class="btn btn-outline-primary btn-sm">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <small class="text-muted">
+                                <i class="bi bi-people"></i> @property.MaxGuests guests •
+                                <i class="bi bi-door-closed"></i> @property.Bedrooms beds •
+                                <i class="bi bi-droplet"></i> @property.Bathrooms baths
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No properties available at the moment. Please check back later!
+        </div>
+    }
+</div>
