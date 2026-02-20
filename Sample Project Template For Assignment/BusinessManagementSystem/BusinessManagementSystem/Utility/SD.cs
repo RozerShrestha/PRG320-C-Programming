@@ -18,6 +18,11 @@ namespace BusinessManagementSystem.Utility
         public const string Status_Approved = "Approved";
         public const string Status_Rejected = "Rejected";
 
+        // Pre-defined role combinations as constants
+        public const string Roles_SuperadminAndAdmin = "superadmin,admin";
+        public const string Roles_AdminOnly = "admin";
+        public const string Roles_AllAdmins = "superadmin,admin";
+
         public static readonly Dictionary<string, string> Occupations = new Dictionary<string, string>
         {
             { Occupation.Occupation1.ToString(), "Occupation 1" },
@@ -29,6 +34,15 @@ namespace BusinessManagementSystem.Utility
             { Occupation.Occupation7.ToString(), "Occupation1 7" }
         };
 
+        public static string GetRoles(params string[] roles)
+        {
+            return string.Join(",", roles.Where(r => !string.IsNullOrWhiteSpace(r)));
+        }
+
+        public static IReadOnlyList<string> GetAllRoles()
+        {
+            return new[] { Role_Superadmin, Role_Admin, Role_Employee, Role_HR };
+        }
 
     }
 

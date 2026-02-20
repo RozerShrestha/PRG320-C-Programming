@@ -21,6 +21,11 @@ var mapperConfiguration = new MapperConfiguration(configuration =>
 {
     configuration.AddProfile(new MappingProfile());
 });
+
+var logger = LogManager.Setup()
+    .LoadConfigurationFromFile("nlog.config", optional: true)
+    .GetCurrentClassLogger();
+
 var mapper = mapperConfiguration.CreateMapper();
 var builder = WebApplication.CreateBuilder(args);
 
@@ -109,12 +114,7 @@ builder.Services.AddSession(options =>
 #endregion
 
 #region Logging
-builder.Services.AddLogging(loggingBuilder =>
-{
-    loggingBuilder.ClearProviders();
-    loggingBuilder.AddNLogWeb();
-    loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-});
+builder.Logging.ClearProviders();
 builder.Host.UseNLog();
 #endregion
 
