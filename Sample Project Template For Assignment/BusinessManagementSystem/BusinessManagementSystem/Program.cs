@@ -23,6 +23,18 @@ var mapperConfiguration = new MapperConfiguration(configuration =>
 });
 var mapper = mapperConfiguration.CreateMapper();
 var builder = WebApplication.CreateBuilder(args);
+
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLiveServer",
+        policy => policy
+            .WithOrigins("http://127.0.0.1:5500", "http://localhost:5500") // Live Server origins
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<ApplicationDBContext>(options => 
 { 
@@ -110,6 +122,7 @@ builder.Host.UseNLog();
 
 var app = builder.Build();
 app.Logger.LogInformation("Starting Application");
+app.UseCors("AllowLiveServer");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

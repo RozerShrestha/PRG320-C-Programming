@@ -296,6 +296,7 @@ namespace BusinessManagementSystem.Controllers
         [Authorize(Roles = "superadmin,admin_tattoo")]
         public IActionResult GetAllUser()
         {
+            //change the responseDTo
             try
             {
                 if (roleName == SD.Role_Superadmin)

@@ -62,6 +62,7 @@ namespace StudentPortal.Web.Controllers
             {
                 student.Id = Guid.NewGuid();
                 _context.Add(student);
+                _context.Students.Where(x=>x.Name.Contains("Test"));
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

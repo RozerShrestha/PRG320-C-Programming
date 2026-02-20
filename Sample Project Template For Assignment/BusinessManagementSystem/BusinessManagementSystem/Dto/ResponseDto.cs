@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessManagementSystem.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -12,6 +13,7 @@ namespace BusinessManagementSystem.Dto
         public string Message { get; set; }
         public T Data { get; set; }
         public List<T> Datas { get; set; } = [];
+        public List<User> Datass { get; set; } = [];
         public dynamic Dynamic_Datas { get; set; }
 
         public ResponseDto()

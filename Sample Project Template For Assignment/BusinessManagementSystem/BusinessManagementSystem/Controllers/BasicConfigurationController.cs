@@ -12,7 +12,7 @@ using System.Text.Encodings.Web;
 
 namespace BusinessManagementSystem.Controllers
 {
-    [Authorize(Roles = "superadmin,admin_tattoo,admin_kaffe,admin_apartment")]
+    [Authorize(Roles = "superadmin")]
     public class BasicConfigurationController : BaseController
     {
         private readonly BasicConfigurationRepository _basicConfigurationRepository;

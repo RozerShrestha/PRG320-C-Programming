@@ -50,7 +50,7 @@ namespace BusinessManagementSystem.Models
         public string? Notes { get; set; }
 
         [JsonIgnore]
-        public ICollection<UserRole> UserRoles { get; set; }
+        public ICollection<UserRole>? UserRoles { get; set; }
 
     }
 
@@ -58,8 +58,9 @@ namespace BusinessManagementSystem.Models
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.HasIndex(x => x.Guid).IsUnique();
             builder.HasIndex(x => x.UserName).IsUnique();
-            builder.Property(x => x.UserName).HasColumnType("varchar(20)");
+            builder.Property(x => x.UserName).HasColumnType("varchar(21)");
             builder.HasIndex(x => x.Email).IsUnique();
             builder.Property(x => x.Email).HasColumnType("varchar(255)");
             builder.Property(x => x.FullName).HasColumnType("varchar(255)");
@@ -67,7 +68,6 @@ namespace BusinessManagementSystem.Models
             builder.Property(x => x.Address).HasColumnType("varchar(255)");
             builder.HasIndex(x=>x.PhoneNumber).IsUnique();
             builder.Property(x => x.PhoneNumber).HasColumnType("varchar(10)");
-            builder.Property(x => x.UserName).HasColumnType("varchar(150)");
             builder.Property(x => x.Email).HasColumnType("varchar(150)");
             builder.Property(x => x.HashPassword).HasColumnType("varchar(255)");
             builder.Property(x => x.Salt).HasColumnType("varchar(255)");

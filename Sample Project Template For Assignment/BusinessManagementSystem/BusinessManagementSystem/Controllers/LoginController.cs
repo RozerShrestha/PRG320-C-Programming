@@ -192,7 +192,7 @@ namespace BusinessManagementSystem.Controllers
                 
                 if (ModelState.IsValid)
                 {
-                    var response = _iLogin.Login(loginRequest);
+                    ResponseDto<LoginResponseDto> response = _iLogin.Login(loginRequest);
                     if (response.StatusCode == HttpStatusCode.OK && response.Data != null)
                     {
                         HttpContext.Session.SetString("Token", response.Data.Token);

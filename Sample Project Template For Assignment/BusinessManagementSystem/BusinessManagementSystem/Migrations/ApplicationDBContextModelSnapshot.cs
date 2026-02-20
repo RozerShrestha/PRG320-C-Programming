@@ -287,7 +287,7 @@ namespace BusinessManagementSystem.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("varchar(150)");
+                        .HasColumnType("varchar(21)");
 
                     b.HasKey("Id");
 
